@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Field Inspection Report</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #003366;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #003366;
+            margin: 0;
+            font-size: 28px;
+        }
+        .info-section {
+            margin-bottom: 30px;
+        }
+        .info-row {
+            margin-bottom: 10px;
+        }
+        .info-label {
+            font-weight: bold;
+            display: inline-block;
+            width: 200px;
+        }
+        .section-title {
+            background-color: #003366;
+            color: white;
+            padding: 10px;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .inspection-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        .inspection-table th,
+        .inspection-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .inspection-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .status-approved {
+            color: green;
+            font-weight: bold;
+        }
+        .status-pending {
+            color: orange;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            font-size: 10px;
+            color: #666;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>FIELD INSPECTION REPORT</h1>
+        <p>Job Order: {{ job_order.po_reference }}</p>
+    </div>
+
+    <div class="info-section">
+        <div class="info-row">
+            <span class="info-label">Client:</span>
+            <span>{{ client.name }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Contact Person:</span>
+            <span>{{ client.contact_person }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Site Location:</span>
+            <span>{{ job_order.site_location }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Scheduled Date:</span>
+            <span>{{ job_order.scheduled_start|date:"d/m/Y" }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Report Generated:</span>
+            <span>{{ generated_at|date:"d/m/Y H:i" }}</span>
+        </div>
+    </div>
+
+    <div class="section-title">INSPECTION SUMMARY</div>
+    
+    <table class="inspection-table">
+        <thead>
+            <tr>
+                <th>Equipment Tag</th>
+                <th>Type</th>
+                <th>Inspector</th>
+                <th>Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for inspection in inspections %}
+            <tr>
+                <td>{{ inspection.job_line_item.equipment.tag_code }}</td>
+                <td>{{ inspection.job_line_item.equipment.type }}</td>
+                <td>{{ inspection.inspector.get_full_name }}</td>
+                <td>{{ inspection.start_time|date:"d/m/Y" }}</td>
+                <td>
+                    <span class="{% if inspection.status == 'APPROVED' %}status-approved{% else %}status-pending{% endif %}">
+                        {{ inspection.get_status_display }}
+                    </span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="footer">
+        <p>This report summarizes all inspections conducted for this job order.</p>
+        <p>© 2025 Inspection SaaS - All Rights Reserved</p>
+    </div>
+</body>
+</html>

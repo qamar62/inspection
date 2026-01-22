@@ -1,0 +1,21 @@
+
+# Python
+__pycache__/
+*.py[cod]
+*.env
+*.sqlite3
+venv/
+env/
+
+# Node / Next
+node_modules/
+.next/
+npm-debug.log
+yarn-error.log
+pnpm-lock.yaml
+
+# Docker
+*.log
+.env.local
+.env.*.local
+.DS_Store

@@ -1,0 +1,402 @@
+=== Page 1 ===
+
+SOFTWARE REQUIREMENTS SPECIFICATION (SRS)  
+Integrated Inspection, Testing & Training Management Platform  
+Version:  Consolidated Draft  
+Scope:  Inspection, Testing, Training, Operator Certification, Finance, HR, Assets, Tools, 
+Controlled Stock  
+Compliance Target:  ISO/IEC 17020:2012 (Primary), ISO 9001 (Supportive)  
+1. INTRODUCTION  
+1.1 Purpose  
+This document defines the complete functional and operational requirements of an Integrated 
+Inspection, Testing, Training, and Certification Platform , covering the full  lifecycle from service 
+definition → quotation → job order → field execution → controlled document issuance → 
+publishing → finance invoicing → audit . 
+The document is intended to be:  
+ Implementation -ready  for software development teams  
+ Audit -ready  for ISO/IE C 17020 assessors  
+ Operationally accurate , reflecting real inspection, testing, and training practices  
+No content has been removed; all workflows have been normalized and aligned.  
+1.2 System Objectives  
+The system shall:  
+ Enforce service -level governance  via a centralized Service Master Registry  
+ Support offline -first execution  for inspections, testing, and training  
+ Maintain full traceability  of tools, assets, stickers, certificates, wallet cards, and 
+approvals  
+ Prevent unauthorized execution, issuance, or billing  
+ Produce verifiable, controlled outputs  (reports, certificates, cards)  
+ Support finance invoicing based strictly on executed work  
+1.3 System Scope  
+The platform covers:  
+
+=== Page 2 ===
+
+ Inspection services (equipment, lifting, electrical, scaffolding, etc.)  
+ Testing se rvices (NDT & non -NDT)  
+ Operator assessment & certification  
+ Training delivery & certification  
+ Controlled stationery (stickers, letterheads, wallet cards)  
+ Tools, instruments & calibration  
+ Company assets  
+ HR competence & authorization  
+ Finance & invoicing  
+ Clien t directory & client portal  
+2. SYSTEM ARCHITECTURE (LOGICAL MODULES)  
+2.1 Core Functional Modules  
+1. Service Master Registry (Quality -controlled)  
+2. Client Directory & Client Portal  
+3. Quotation Management  
+4. Job Order Management & Scheduling  
+5. Field Execution (Inspection / Testing / Training / Certification)  
+6. FIR Management  
+7. Document Issuance & Publishing  
+8. Sticker Management  
+9. Certificate Letterhead & Wallet Card Stock Control  
+10. Tools, Instruments & Assets Registry  
+11. HR & Competence Management  
+12. Finance & Invoicing  
+13. Report ing, Audit & Compliance  
+3. ROLES & ACCESS CONTROL (RBAC)  
+3.1 System Roles (Non -Exhaustive)  
+ Admin  
+ Coordinator  
+ Inspector / Tester  
+ Trainer / Examiner  
+ Technical Manager  
+ NDT Manager  
+ Quality Manager  
+ Quality Executive  
+ Management Representative (MR)  
+ Document Controller  
+ Finance User  
+
+=== Page 3 ===
+
+ Client Portal User (role -scoped)  
+3.2 RBAC Principles  
+ All permissions are role-based  
+ All actions are audit logged  
+ Inspectors and trainers never see pricing  
+ Quality owns governance artifacts (services, templates, formats)  
+4. SERVICE M ASTER REGISTRY (GOVERNANCE BACKBONE)  
+4.1 Purpose  
+The Service Master Registry is the single source of truth  for all services the organization 
+performs.  
+No service may be:  
+ Quoted  
+ Executed  
+ Issued  
+unless it exists as a published service version  in this registry.  
+4.2 Ownership  
+Owned by:  
+ Quality Manager  
+ Quality Executive  
+ Management Representative  
+Read -only for all other roles.  
+4.3 Service Definition Structure  
+Each Service contains:  
+Identity  
+ Service Code  
+ Service Name (EN/AR)  
+ Service Category  
+
+=== Page 4 ===
+
+(Inspection / Testing / Training / Operator Certification / Calibration)  
+ Discipline (optional)  
+ Status (Active / Inactive)  
+ Effective Date  
+4.4 Execution Governance (Service -Level)  
+Each service version defines:  
+ Requires Equipment? (Mandatory / Optional / Not Required)  
+ Requires Person? (Mandatory / Optional / Not Required)  
+ Checklist template & minimum level  
+ “All OK” bulk completion allowed (Yes/No)  
+ Evidence rules  
+ Sticker requirement:  
+o Required  
+o Optional  
+o Not Applicable  
+ Approval required? (Yes/No)  
+ Approver role(s)  
+ Validity rules (if applicable)  
+4.5 Output Definition  
+Each service defines outputs:  
+ Inspection Certificate  
+ Test Report  
+ Training Certificate  
+ Wallet Card  
+ Other controlled document  
+Each output links to:  
+ Template  
+ Letterhead category  
+ Background rules  
+ Numbering rules  
+4.6 Version Control  
+ Any change creates a new version  
+ Old versions are retained  
+
+=== Page 5 ===
+
+ Job Orders reference the service version active at time of quotation  
+ No deletions allowed  
+5. CLIENT DIRECTORY & CLIENT PORTAL  
+5.1 Client Master Profile  
+Includes:  
+ Legal name (EN/AR)  
+ CR, VAT, National Address (PDFs)  
+ Head office details  
+ Bank details (optional)  
+5.2 Contacts & Departments  
+Structured contacts per department:  
+ Procurement  
+ Finance  
+ HSE 
+ Engineering  
+ Plant / Equipment  
+ Others  
+5.3 Projects Register  
+Each client may have  multiple projects with:  
+ Site details  
+ Key contacts  
+ Equipment mapping  
+5.4 Client Portal  
+Clients may:  
+ View published documents only  
+ Download certificates/reports  
+ Track Job Orders  
+ View equipment history  
+ View invoices (restricted roles)  
+5.5 Client Notification  Rules  
+
+=== Page 6 ===
+
+Email -based notifications:  
+ Job Order Created  
+ Job Order Published  
+ FIR Issued  
+Recipients are selected from registered contacts.  
+All notifications are logged.  
+6. QUOTATION MANAGEMENT  
+6.1 Entry Rules  
+ Quotations can only use published services  
+ Pricing vi sible only to Coordinator/Admin/Finance  
+6.2 Quotation Lifecycle  
+Statuses:  
+ Draft  
+ Sent  
+ Accepted  
+Acceptance methods:  
+ PO 
+ Email confirmation  
+ Verbal confirmation (logged)  
+6.3 Line Items  
+Each quotation line item stores:  
+ service_id  
+ service_version_id  
+ snapshot of service name/description  
+ quantity  
+ unit price  
+ unit type  
+ VAT 
+6.4 Governance Rule  
+
+=== Page 7 ===
+
+A Job Order can only be created  from an Accepted Quotation . 
+7. JOB ORDER CREATION  
+7.1 Purpose  
+Translate commercial intent (quotation) into operational truth.  
+7.2 Scope Selection  
+ Coordinator may include/exclude quotation items  
+ Planned quantity may differ from quoted quantity  
+ Original quotation data is preserved  
+7.3 Preloaded Execution Instances  
+For each service with quantity > 0, the system generates execution instances:  
+ Inspectio n equipment slots  
+ Testing instances  
+ Training participant slots  
+ Operator certification slots  
+Execution is service -driven , not free -form.  
+7.4 Assignment  
+Coordinator assigns:  
+ Inspectors  
+ Testers  
+ Trainers  
+ Examiners  
+Authorization is enforced automatically.  
+7.5 Added -at-Site Scope  
+Inspectors may add services on -site:  
+ Execution allowed immediately  
+ Pricing hidden  
+ Marked “Added at Site”  
+ Requires coordinator approval before final issuance  
+
+=== Page 8 ===
+
+7.6 Internal Inspection Request Form  
+Mandatory per Job Order.  
+Captures:  
+ Request  source  
+ Date  
+ Evidence (PO/email/verbal)  
+Non -deletable and audit -locked.  
+8. JOB ORDER EXECUTION (INSPECTION & TESTING)  
+8.1 Offline -First Execution  
+ Job Orders sync to device  
+ Evidence stored locally  
+ Sync conflict handling enforced  
+8.2 Execution Flow  
+ Select service instance  
+ Identify equipment/person (as required)  
+ Capture identity data (OCR + confirmation)  
+ Execute checklist  
+ Capture evidence  
+ Record outcome  
+ Handle sticker (if applicable)  
+8.3 Sticker Handling  
+Sticker behavior governed by service policy:  
+ Required  
+ Optional  
+ Not Applicable  
+Sticker states:  
+ In Stock  
+ Issued  
+ Reserved (Offline/Online)  
+ Used  
+
+=== Page 9 ===
+
+ Invalid  
+Sticker becomes Used only when execution is finalized and document exists . 
+9. FIR (FIELD INSPECTION REPORT)  
+9.1 FIR Rules  
+ Multiple FIRs allowed per Job Order  
+ FIR generated per visit/subset  
+ FIR numbering per JO  
+9.2 Client Signature  
+ Digital signature captured on device  
+ If client absent:  
+o Email acceptance rule applies  
+o Email evidence bound to FIR  
+10. DOCUMENT ISSUANCE & APPROVAL  
+10.1 Draft Generation  
+System generates:  
+ Plain (no background) PDFs  
+ Draft -only until approval and stock entry  
+10.2 Approval Routing  
+If service requires approval:  
+ Approver notified  
+ Reject → rework required  
+10.3 Numbering  
+ Non -sequential  
+ Non -guessable  
+ Controlled by system  
+11. LETTERHEAD & WALLET CARD STOCK CONTROL  
+11.1 Controlled Stock Types  
+
+=== Page 10 ===
+
+ Inspection/Test letterheads  
+ Training letterheads  
+ Wallet cards  
+11.2 Issuance & Usage  
+ Stock issued to users  
+ User enters number after printing  
+ System validates uniqueness  
+ Mapping is immutable  
+12. OPERATOR CERTIFI CATION EXECUTION  
+12.1 Modes  
+ On-site 
+ Off-site (secure link)  
+12.2 Outputs  
+ Wallet Card (default)  
+ A4 Certificate (only if required)  
+Wallet card number = physical stock number  
+System document ID remains separate.  
+13. TRAINING EXECUTION  
+13.1 Attendance & Assessment  
+ QR-based attendance  
+ QR-based assessment  
+ Digital signatures  
+13.2 Outputs  
+ Training certificate  
+ Wallet card  
+13.3 Finance Snapshot  
+Billing based on:  
+
+=== Page 11 ===
+
+ Actual attendance  
+ Issued outputs  
+Finance cannot edit quantities or prices.  
+14. TOOLS, INSTRUMENTS & ASSETS REGISTRY  
+14.1 Tools & Instruments  
+ Calibration required flag  
+ Expiry enforcement  
+ Usage log auto -generated  
+ Calibration snapshot stored per usage  
+14.2 Assets  
+ Vehicles  
+ IT equipment  
+ Kits 
+ Furniture  
+Tracked by:  
+ Location  
+ Responsible person  
+ Movement history  
+15. HR & COMPETENCE MANAGEMENT  
+15.1 Staff Master  
+Single master record per staff.  
+15.2 Authorization Matrix  
+Staff authorization defined by:  
+ Service category  
+ Discipline  
+ Role  
+ Validity  
+ 
+
+=== Page 12 ===
+
+System blocks unauthorized assignments.  
+16. FINANCE & INVOICING  
+16.1 Finan ce Entry Rule  
+Job Order becomes finance -ready only when:  
+ Execution completed  
+ Documents issued  
+ Quantities finalized  
+16.2 Billing Snapshot  
+Read -only snapshot generated by system.  
+16.3 Invoice Entry  
+Finance enters:  
+ Invoice number  
+ Amount  
+ Date  
+System enforces:  
+ Duplicate checks  
+ Amount tolerance  
+ SLA alerts  
+17. AUDIT, REPORTING & COMPLIANCE  
+System supports:  
+ ISO/IEC 17020 audits  
+ Tool usage logs  
+ Stock traceability  
+ Authorization records  
+ Change history  
+ Full lifecycle evidence  
+18. GLOSSARY  
+ 
+
+=== Page 13 ===
+
+JO – Job Order  
+FIR – Field Inspection Report  
+Service Version  – Governed version of a service definition  
+Execution Instance  – Preloaded unit of work under a service  
+Added at Site  – Scope added during execution, pending approval  
+Plain PDF  – Document without background/letterh ead 
+Final Archival Copy  – Document with background and stock number  
+Wallet Card  – Physical operator/training card  
+Sticker  – Controlled inspection tag  
+RBAC  – Role -Based Access Control  
+ 

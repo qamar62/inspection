@@ -1,0 +1,3308 @@
+=== Page 1 ===
+
+Integrated Inspection Testing and Training 
+Platform  
+ 
+Modules  
+1. Service Master Registry (Quality)  
+2. Client Directory + Portal (Admin/Coordinator)  
+3. Quotation (Coordinator/Finance)  
+4. Job Orders + Scheduling (Coordinator)  
+5. Field Execution (Inspector/Tester/Trainer)  
+6. Outputs & Publishing (Document Controller/Coordinator/Approver)  
+7. Controlled Stock (Letterheads, Wallet Cards, Stickers)  
+8. Tools/Instruments & Assets (Quality/Coordinator)  
+9. HR & Competence (HR/Quality/Management)  
+10. Finance & Invoicing (Finance)  
+MVP modules  
+1. Users,  Roles & Access (RBAC)  
+ Roles: Admin, Coordinator, Inspector/Tester, Trainer/Examiner, Approver (Tech 
+Manager / NDT Manager) , Quality Manager, Management Representative MR, Quality 
+Executive  
+ Permissions per module + audit logs  
+2. Master Data  
+ Clients, sites/projects  
+ Assets/equipment registry (tag/serial/category, history, next due)  
+ People registry (operators/trainees/candidates)  
+3. Service Catalog & Policies  
+ Service types/subtypes (Lifting, Orthopedic, NDT methods, Training courses, Operator 
+cert types)  
+ Approval required?  (yes/no) per subtype/category  
+ Approver routing role (TECH_MANAGER vs NDT_MANAGER)  
+4. Job Orders & Scheduling  
+ Job order creation with bundled line items (Inspection/NDT/Training/Op Cert)  
+ Assignment + calendar/dispatch  
+
+=== Page 2 ===
+
+ Status tracking  
+5. Templates  & Digital Forms  
+ Controlled templates (checklists, reports, certificates)  
+ Form execution UI (structured fields + attachments)  
+6. Field App (Offline -first PWA)  
+ Offline job access (assigned work)  
+ Evidence capture (photos/files)  
+ FIR creation offline or later when the system goes online  
+ Sync engine + pending queue  
+7. Field Inspection Report (FIR) + Client Signature  
+ One FIR per job order per day  
+ Client rep: name + title + phone + signature  
+ FIR PDF issuance + public token share link active only after sync  
+8. Review / Approval (One -step, configurable)  
+ Approver inbox  
+ Approve/reject with comments  
+ Enforced only when line item requires approval  
+9. Document Issuance & Verification  
+ Report/certificate generation (PDF)  
+ Document numbering rules  
+ QR / token verification page  
+ Versioni ng + revocation  
+ 
+10. Training & Operator Certification  
+ Course catalog, sessions, attendance  
+ Exams/results (if needed)  
+ Operator certificates (validity, renewals, history)  
+11. Dashboards & Reporting  
+ TAT (created→issued), overdue work  
+
+=== Page 3 ===
+
+ Upcoming expiries (assets + operator certs)  
+ Basic exports (CSV/PDF)  
+12. Billing / Invoicing & Integrations  
+ Email/SMS/WhatsApp notifications  
+Phase 2 modules (when you start selling B2B)  
+12. Multi -tenant (SaaS) Admin  
+ Tenant provisioning, tenant -level configs, isolation  
+ Per-tenant numbering, logos, template sets  
+13. Client Portal (Self -service)  
+ Work requests, order tracking  
+ Secure downloads and verification  
+ Renewal reminders  
+15. Advanced Quality / Compliance  
+ NCR/CAPA workflows  
+ Document control workflows beyond templates  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Must have  
+ Single Job Order  that can bundle: inspection(s), NDT test(s), operator 
+assessment/certification, training delivery. All modeule under 1 JO  
+ Client + Site + Asset registry  (equipment items with serial/ID, project/ inspection 
+location, history, certificates, sticker nos . and next due dates).  
+ Client Directiory  – All relevant information  
+ Scheduling & dispatch  (assign inspectors/examiners/trainers; avoid conflicts).  
+ Sticker Module – with QR code  
+
+=== Page 4 ===
+
+ Field execution app  (mobile/tablet) with checklists/templates, photo 
+attachment s, offline -first (must -have) . Simplified checklist that can be expanded. 
+Simplified by default, Critical, Full. Giving Sticker numers with QR code  
+ Field Inspection Report (FIR)  issued immediately from the field app, with  client 
+representative signature cap ture . Field Inspection Report to be generate immediately 
+upon completing/ Partial completing JO.  
+ Report + Certificate generation  (templates, numbering, approvals, digital signatures, QR 
+verification).  
+ Operator certification workflow  (candidate registration , assessment steps, outcomes, 
+certificate/ID card).  
+ Training management  (course catalog, sessions, attendance, exams, certificates).  All 
+training materials online. Not downloadable  
+ ISO/IEC 17020 traceability : audit trail, authorizations, competence records , controlled 
+templates, approvals.  
+Should have  
+ Customer portal (download reports/certificates, track orders, request work).  
+ Integrations: accounting/invoicing (or basic invoicing), email/SMS/WhatsApp 
+notifications.  
+ Equipment calibration and Tquipment Tools  Issuance record  
+ HR Module - Examiner qualification tracking.  
+ QR asset tagging support.  
+ Analytics dashboards (utilization, turnaround, nonconformities, expiry forecasting).  
+Target scale and constraints  
+ ~200 job orders/month  
+ ~30 internal users (coordinators, inspectors, examiners, trainers)  
+ Deploy to  private cloud  (no strict data residency constraint stated)  
+Key entities  
+ Client  (legal entity)  
+ Site (client location)  
+ Asset/Equipment  (serial/tag, category, history)  
+ Person  (operator/candidate/traine e) 
+ JobOrder  (parent)  
+ ServiceLineItem  (inspection / NDT / training / certification)  
+ Assignment  (who will do what, when)  
+ FormTemplate  & FormResponse  (controlled templates + captured evidence)  
+ EvidenceAttachment  (photos/docs)  
+ Report/Certificate  (versioned out puts, status, numbering)  
+ StaffCompetency  (internal qualification/authorization records)  
+
+=== Page 5 ===
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+=== Page 6 ===
+
+Client Directory (Company Master Profile)  
+(With Client Portal + Client Notification Rules)  
+1. Client Master Profile  
+Client Basic Info 
+ Client Name (English and Arabic)  
+ CR Number (PDF upload)  
+ VAT Number + VAT Certificate (PDF upload)  
+ National Address (PDF upload)  
+ Head Office Address + City  
+ Website (optional)  
+ Bank details / IBAN letter (optional)  
+2. Departments & Contacts (Structured)  
+Create department -based contact records  (not just one contact).  
+Contact Fields  
+ Full Name  
+ Role/Title  
+ Department  
+ Mobile (KSA format)  
+ Email  
+ WhatsApp (Yes/No)  
+ Office location (if relevant)  
+ Notes (e.g., “PO approvals only”)  
+Recommended Department Tabs  
+ Procurement  
+ Finance / Accounts Payable  
+ HSE / Safety  
+ Engineering / QAQC  
+ Plant / Equipment Department  
+3. Projects Register (Per Client)  
+Each client can have multiple projects. For each project:  
+
+=== Page 7 ===
+
+ Project Name  
+ Location (City + GPS pin optional)  
+Project Key Cont acts 
+ Project Manager (PM) name + mobile + email  
+ HSE Manager name + mobile + email  
+ Procurement contact name + mobile + email  
+ Plant/Equipment Manager name + mobile + email  
+ Site Admin / Timekeeper (optional)  
+ Purchaser  
+4. JO Registry (Per Client)  
+ List of all J ob Orders (retrievable)  
+ Filterable by status (Draft / Scheduled / Completed / Published / Invoiced)  
+5. Equipment Register (Assets Under Each Client/Project)  
+Equipment Master Fields  
+ Certificate No. (retrievable)  
+ Equipment Type (Forklift, Reach Stacker, Crane, EWP…)  
+ Manufacturer  
+ Make / Model  
+ Serial Number  
+ Plate number / Asset/Equipment ID (client’s number)  
+ Capacity (SWL / Rated load)  
+ Location / Project mapping  
+ Date of Inspection  
+ Date of Issuance of Certificate  
+ Next Due Date  
+ Inspector Name  
+6. People Regist er (Operators / Trainees / Competence)  
+Person Profile  
+ Full Name  
+ ID/Iqama (if allowed to store by client agreement)  
+ Company / Employer (contractor name)  
+ Trade / Role (Operator, Rigger, Signalman, etc.)  
+ Certificates No. (retrievable)  
+
+=== Page 8 ===
+
+ Date of Issuance  
+ Expiry dates (competence validity)  
+ Photo (optional, if used for cards)  
+7. Downloads & Exports  
+One-click exports  
+ Client master file (PDF pack + Excel summary)  
+ Project master file  
+ Equipment list + due dates (Excel)  
+ Training matrix (people vs training/expiry)  
+ JO master List  
+8. Permissions & Roles (Internal)  
+ Admin (full edit)  
+ Coordinator (upload + view only)  
+ Finance (read + payment docs)  
+ Client portal user (view/download only for the client; scoped access)  
+Client Portal (Extension Layer)  
+9. Client Portal Enablement  
+ Portal enabled for selected clients (e.g., A -category)  
+ Portal access is configurable per client  
+10. Client Portal User Management  
+Client -side users are created/managed by Admin/Coordinator.  
+Client Portal Roles (Recommended)  
+ Client Admin (manages portal us ers) 
+ Procurement user (JOs + documents)  
+ HSE / Engineering user (certificates/reports)  
+ Plant/Equipment user (equipment + due dates)  
+ Finance user (invoices & payment status only)  
+ Read -only user  
+
+=== Page 9 ===
+
+11. Portal Visibility Rules  
+Clients can view/download published  items only:  
+ Published job orders  
+ Certificates / reports  
+ Training certificates & wallet card PDFs  
+ Equipment history linked to certificates  
+Drafts/internal notes are never visible.  
+12. Portal Finance View (Optional, Restricted)  
+Finance portal users can view : 
+ JO ↔ Invoice number  
+ PO document (if uploaded)  
+ Invoice amount + VAT  
+ Payment status (paid/partial/pending)  
+ Total billed vs paid vs outstanding  
+Clients cannot edit finance data.  
+Client Notification Rules (Embedded)  
+13. Notification Recipients (Who gets emai ls) 
+Notifications are email -based by default.  
+Primary recipient: “Requestor”  
+For each Job Order, the system must store a Requestor Contact  (selected from the client’s 
+contacts list).  
+This Requestor is the default recipient  for JO notifications.  
+ 
+Additional  recipients (optional, configurable per client/project)  
+Coordinator can add CC recipients from:  
+ Procurement  
+
+=== Page 10 ===
+
+ HSE 
+ Engineering/QAQC  
+ Plant/Equipment  
+ Finance/AP (finance -related only)  
+Rules:  
+ Recipients must be chosen from registered client contacts (no free-typing emails unless 
+you allow it)  
+ All notification sending is logged  
+14. Notification Types (Minimum Required)  
+14.1 Job Order Created Notification (Email)  
+Trigger:  JO is created / scheduled (after inspection request record is captured)  
+Recipients:  
+ Requestor (To)  
+ Optional CC list  
+Contents:  
+ JO number  
+ Client + project/site  
+ Services summary (no pricing)  
+ Planned dates (if available)  
+ Assigned team names (optional; you can hide this if you prefer)  
+ Link to client portal (if enabled)  
+ Reference documents (PO/em ail/verbal request record reference)  
+14.2 Job Order Published Notification (Email)  
+Trigger:  JO is marked Published (certificates/reports released to client portal)  
+Recipients:  
+ Requestor (To)  
+ Optional CC list  
+Contents:  
+ JO number  
+
+=== Page 11 ===
+
+ Summary of deliverables:  
+o inspection reports/certificates  
+o training certificates  
+o wallet cards availability (PDF)  
+ Download/access instructions:  
+o Portal link OR secure share links (if you use them)  
+ Due dates overview (optional)  
+14.3 FIR Notification (Email)  
+Trigger:  FIR submitted and i ssued (post -sync)  
+Recipients:  
+ Requestor (To)  
+ Project key contacts (optional, configurable)  
+o PM, HSE Manager, Site Admin/Timekeeper, etc.  
+Contents:  
+ FIR link (public -but-unguessable OR portal link)  
+ Inspection day summary  
+ Signature captured confirmation (if applicable)  
+ Timestamp  
+15. Notification Controls (Recommended)  
+Per client/project, allow toggles:  
+ Enable/disable each notification type  
+ Default CC lists per department  
+ Email templates per language (English/Arabic)  
+ Include attachments? (default: links only, not heavy PDFs)  
+System must log:  
+ Who received  
+ When sent  
+ Delivery status (sent/failed)  
+Key Principles  
+ Requestor is the default communication owner  
+
+=== Page 12 ===
+
+ Published -only visibility for clients  
+ Finance view is role -gated  
+ Notifications are traceable and auditable  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+=== Page 13 ===
+
+Workflow: Service Master Registry (Unified, Quality -
+Controlled)  
+Purpose  
+Create a single Quality -owned master registry  of all services the organization performs 
+(Inspection, Testing, Training, Operator Certification, Calibration).  
+This registry is the single source of truth  that drives:  
+ quotation service selection (dropdown)  
+ job order scope and preloaded execution items  
+ field execution forms (checklists / proformas / assessments)  
+ certificate/report/card formats  
+ approval routing  
+ validity enforcement  
+ audit traceability & versioning  
+1. Ownership & Access Control  
+Owner  
+Quality Department  
+ Quality Manager  
+ Quality Executive  
+ Management Representative (MR)  
+Allowed Actions (Quality roles only)  
+ Create / edit service definitions  
+ Link standards /  procedures / templates  
+ Define checklists / assessment templates  
+ Define outputs (certificates, reports, wallet cards)  
+ Define approval rules and validity rules  
+ Publish new versions  
+Read -only Users  
+ Coordinators, Inspectors, Trainers, Finance (view only)  
+ They  cannot change service definitions  
+
+=== Page 14 ===
+
+2. Service Catalog Structure (Unified)  
+Each service has:  
+2.1 Service Identity  
+ Service Code  (unique, system -generated or governed format)  
+ Service Name  (English + Arabic optional)  
+o e.g., “Inspection – Mobile Crane”  
+ Service Category  (one of):  
+o Inspection  
+o Testing  
+o Training  
+o Operator Certification  
+o Calibration  
+ Discipline  (optional refinement):  
+o Lifting / HSE / NDT / Pressure / Electrical / etc.  
+ Status: Active / Inactive  
+ Effective Date (for versioning)  
+Rule: Only Active  services appear in Quotation dropdowns.  
+3. Execution Model (What the Field Needs)  
+Quality sets “execution dependencies” per service:  
+3.1 Requires Equipment?  
+ Mandatory / Optional / Not Required  
+3.2 Requires Person?  
+ Mandatory / Optional / Not Required  
+Examp les: 
+ Inspection – Forklift → Equipment Mandatory  
+ NDT – MPT → Equipment Optional (or Mandatory if you choose)  
+ Training – Work at Height → Person Mandatory  
+ Operator Certification – Mobile Crane → Person Mandatory  
+ Calibration – Load Cell → Equipment Mandatory  
+These flags drive:  
+
+=== Page 15 ===
+
+ what coordinator must preload in JO  
+ what inspector/trainer must capture in field  
+ what UI components appear  
+4. Templates & Forms Linked to the Service  
+4.1 For Inspection/Testing Services  
+ Checklist Template (Critical master)  
+ Default check list level shown in field:  
+o Simplified / Expanded / Critical  
+ Minimum enforced level:  
+o Simplified / Expanded / Critical  
+ “All OK” bulk -fill allowed? Yes/No  
+ Evidence policy:  
+o Photos required? Yes/No  
+o Documents required? Yes/No (optional rule)  
+Record Rule: Regardl ess of UI level used, the stored audit record is 
+always “Critical” . 
+4.2 For Training / Operator Certification Services  
+ Proforma Template (identity + history)  
+ Assessment Template (questions)  
+ Pass/Fail criteria (score %, required sections)  
+ Practical assessment required? Yes/No (flag)  
+5. Standards & Procedures (Controlled References)  
+Quality links controlled references to the service:  
+ Standard(s) (e.g., ISO/EN/ASME/regulation)  
+ Work Instruction / Procedure (WI)  
+ Additional reference docs (optional)  
+These  references automatically appear in:  
+ execution forms (header)  
+ reports/certificates  
+ audit exports  
+ 
+
+=== Page 16 ===
+
+Inspectors/Trainers cannot change them.  
+6. Output Definition (What Documents Are Produced)  
+For each service, Quality defines the output package:  
+6.1 Output Ty pes 
+Any combination of:  
+ Inspection Certificate  
+ Test Report  
+ Training Certificate (A4)  
+ Wallet Card  
+ Other controlled document (optional future)  
+6.2 Output Templates  
+ Template(s) per output type (versioned)  
+ Letterhead category:  
+o Inspection/Test Letterhead  
+o Training Letterhead  
+ Background handling:  
+o Draft print copy (no background)  
+o Final archival copy (with background + paper/card number)  
+This links directly to your letterhead/card stock control module.  
+7. Validity Rules (Service -Level Governance)  
+Quality defin es: 
+ Max validity (e.g., 6 months / 12 months) OR “Not Applicable”  
+ Allowed preset options shown to inspector (e.g., 1/3/6/12/custom)  
+ Exception behavior:  
+o If inspector selects > max → route to approval  
+8. Approval Routing (Service -Level Governance)  
+Quality de fines:  
+ Approval required? Yes/No  
+ Approver role(s):  
+
+=== Page 17 ===
+
+o Technical Manager / NDT Manager / Sr Engineer / Team Lead  
+ Multi -approver behavior (if enabled):  
+o “Any one can approve” (parallel) OR “Must all approve” (rare)  
+This is inherited automatically by:  
+ certificates/reports generated from the service  
+9. Commercial Control (Quotation Integration)  
+To support quotation creation cleanly:  
+ Each service has a “Quotation Display Name”  
+ Optional internal service grouping for dropdown UX:  
+o Lifting Inspection  
+o NDT  
+o HSE Training  
+o Operator Certification  
+o Calibration  
+Prices do not live in the Service Registry  (pricing stays in quotation/client agreements).  
+10. Versioning & Change Control (Mandatory)  
+Any change to:  
+ checklist  
+ standards/procedure links  
+ output templates  
+ validity/ approval rules  
+ assessment/proforma  
+…creates a new service version . 
+Rules:  
+ Old versions are retained  
+ Past Job Orders reference the service version active at the time  
+ No deletions; only deactivation + versioning  
+ Change requires:  
+o change reason  
+o approved -by (Quality Manager/MR)  
+
+=== Page 18 ===
+
+11. Operational Effects (What This Enables)  
+Once this registry exists:  
+ Coordinators build quotations using service dropdown  
+ Job Orders inherit services, generating preloaded execution slots  
+ Inspectors/Trainers see correct forms, rules,  outputs automatically  
+ Certificates/reports/cards follow consistent lifecycle and controls  
+ Finance receives clean, service -based executed quantities  
+Key Principles (Non -Negotiable)  
+ No Service in Registry → cannot be quoted → cannot be executed  
+ Services define governance; execution cannot override governance  
+ Equipment/person are execution parameters , not registry roots  
+ One unified catalog prevents duplicates and “free text” chaos  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+=== Page 19 ===
+
+Workflow: Quotation Module (Coordinator)  
+Goal  
+Coordinator creates  a formal quotation (with pricing + VAT + selected T&Cs) that later becomes 
+the only allowed source for creating a Job Order.  
+Inspectors never see pricing.  
+1) Create Quotation (Entry Rules)  
+Rule:  A Job Order can only be created from an Approved/Accepted Quotation . 
+Quotation statuses  
+ Draft  
+ Sent  
+ Accepted (client confirmation / PO / verbal)  
+2) Quotation Header (Client + Project)  
+Step 2A — Select Client  
+ Search/select existing client  
+ If new: create minimal client (name, VAT no if applicable, address, contact)  
+Step 2B — Select Project/Site  
+ Select existing project/site under client OR create new  
+ Project fields: name, address, site contact(s)  
+Step 2C — Quotation metadatary  
+ Quote date (today by default and changable)  
+ Validity period (e.g., 7/14/30 days — configurable default 30 days)  
+ Reference number (auto -generated: e.g., QT -TUVINSP -####)  
+ Currency (default SAR ) 
+3) Service Selection + Pricing (Line Items)  
+Coordinator builds the quote using your Services Catalog . 
+
+=== Page 20 ===
+
+ 
+Step 3A — Add Line Items  
+Each line item inc ludes:  
+ Service item (from Service Master Registry – published services)  
+e.g., “Inspection – Mobile Crane”, “Inspection – Forklift”, “Operator Certification – 
+Motor Grader”  
+o System must show only services that are:  
+ Active , and  
+ Published  (Quality -approved), and  
+ Effective (based on version effective dates)  
+o Quotation must store service reference as:  
+ service_id (stable service identity)  
+ service_version_id (the published version used at quote time)  
+ Service name snapshot (for PDF/history safet y) 
+ Quantity (number)  
+ Unit price  
+ Unit type (default from service definition; editable if permitted)  
+(per equipment / per person / per day / per session / Per visit  / Per Linear Meter ) 
+ Line total = qty × unit price  
+ Notes (optional)  
+ Description box along each  line item / service  
+o Description should auto -populate from Service Master  by default (service 
+description / scope summary if maintained there)  
+o Coordinator may add quote -specific notes (optional)  
+Important rule:  pricing fields are visible only to roles like  Coordinator/Admin/Finance (not 
+Inspector).  
+If a required service is missing from Service Master  
+System should support one of the following (configurable policy):  
+ Service Request to Quality:  coordinator submits a “service request” from quotation; 
+Quality creates/publishes service; then it becomes selectable.  
+OR 
+
+=== Page 21 ===
+
+ Coordinator creates a service entry flagged “Pending Quality Review”:  
+o Service is created in draft/temporary state and clearly flagged  
+ becomes selectable immediately (but flagged), or 
+4) VAT & Totals  
+ VAT % default 15% (editable per quotation)  
+ System calculates:  
+o Subtotal  
+o VAT amount  
+o Grand total  
+Also generate:  
+ Total in digits  
+ Total in words (e.g., “One hundred twenty -three thousand SAR only”)  
+5) Terms & Conditions (Preset Sets + Payment Term)  
+Step 5A — Select T&Cs Set (preloaded)  
+Coordinator selects 1 preset template, e.g.:  
+ Inspection T&Cs  
+ Training T&Cs  
+ Testing/NDT T&Cs  
+ Online testing T&Cs  
+ (You can add more)  
+Step 5B — Pricing/Payment Ter m (manual field)  
+Coordinator must fill a single “Payment Terms” field each time, examples:  
+ 100% advance  
+ 50% advance, 50% on delivery of certificates  
+ 100% upon delivery of certificates  
+ As per PO  
+ Credit period: 30 days, 60 days, etc.  
+(Everything else stays s tandardized.)  
+Step 5B — Bilingial  
+
+=== Page 22 ===
+
+The quotation will be bilingual English and Arabic (All headers and Total Amounts will be 
+bilingual)  
+6) Generate Quotation PDF (Standard Format)  
+ Use your uploaded quotation template (letterhead style)  
+ Insert:  
+o Client + project  
+o Line items table  
+o VAT summary  
+o Total in words and digits  
+o Selected T&Cs set  
+o Payment terms (custom field)  
+o Signature block (your company)  
+o Company Account information  
+System outputs:  
+ PDF stored in the system  
+ Quote version (v1, v2…) if edited after sendin g 
+Note (Service Master alignment): the PDF should render service 
+name/description as captured at the time of quotation, while internally 
+the quotation retains service_id + service_version_id for traceability.  
+7) Send to Client + Track  
+Coordinator actions:  
+ “Send Quotation” button:  
+o email to selected client contact(s)  
+o attach PDF  
+o or download and send  
+System:  
+ Marks status = Sent  
+ Logs time + recipients  
+8) Acceptance (How quote becomes usable for JO)  
+Acceptance methods (choose one on the quote):  
+
+=== Page 23 ===
+
+ PO received (enter  PO number + upload)  
+ Verbal confirmation (enter who confirmed + notes)  
+ Email confirmation (upload/email reference)  
+System:  
+ Marks status = Accepted  
+ Locks pricing (no edits unless “Revise quote” creates new version)  
+Outputs  
+ Quotation record + version history  
+ PDF document  
+ Selected T&Cs set + payment term text  
+ Accepted confirmation evidence (PO/verbal/email)  
+ Ready flag: “Create JO from this Quote”  
+Service Master Registry traceability (added):  
+ Each line item retains:  
+o service_id  
+o service_version_id  
+o service name/de scription snapshot used for PDF and history  
+This ensures Job Orders and audits always reference the correct governed 
+service definition used at quotation time.  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+=== Page 24 ===
+
+Workflow: Job Order Creation (Based on Accepted Quotation)  
+Purpose  
+Enable a Coordinator to create and control a Job Order (JO) strictly from an Accepted 
+Quotation , while:  
+ selecting full or partial quotation items  
+ optionally changing prices (permission configurable per coordinator role)  
+ preparing preloaded execution items  for field staff  
+ tracking planned vs executed quantities  
+ supporting multi -inspector / multi -role assignment  
+ allowing on-site added services/equipment  without blocking execution  
+ enforcing commercial control before final issuance  
+ ensuring ISO/IEC 17020 inspec tion request compliance  
+ maintaining full audit traceability and governance  
+1. Entry Rule  
+ A Job Order can only  be created from an Accepted Quotation  
+ “Accepted” means at least one of the following is recorded:  
+o Purchase Order (attached)  
+o Verbal confirmation (recorded)  
+o Email confirmation (attached)  
+Action  
+Coordinator clicks “Create Job Order”  on the accepted quotation.  
+2. JO Draft Auto -Creation (From Quotation)  
+System automatically creates a JO draft , inheriting read -only reference data  from the 
+quotation:  
+ Client 
+ Project / Site  
+ Client contacts  
+ Quotation number & version (reference only)  
+ All quotation line items:  
+o Service  
+o Service version (from Service Master Registry)  
+o Quantities  
+o Prices  
+
+=== Page 25 ===
+
+At this stage:  
+ All quotation items appear by default  
+ No execution data exists yet 
+3. Select Scope for Job Order (Full / Partial)  
+Coordinator reviews quotation items in a tabular scope -selection view . 
+Options  
+ Select All  
+ Include item in JO (checkbox)  
+ Exclude item from JO  
+Rules  
+ Only selected items  become part of the JO  
+ Excluded items:  
+o remain part of the quotation  
+o are not visible  to inspectors or trainers  
+o are not executable  
+This establishes the operational scope  of the JO.  
+4. Quantity & Price Adjustment (Controlled)  
+4.1 Quantity Adjustment (Allowed)  
+Coordinator may adjust planned quantit ies per selected service item.  
+Example:  
+ Quoted: Mobile Crane Inspection – Qty 5  
+ JO Planned: Mobile Crane Inspection – Qty 3  
+Rules:  
+ Planned quantity = expected execution  
+ This is not final billing quantity  
+ Original quoted quantity is preserved for traceabili ty 
+
+=== Page 26 ===
+
+4.2 Price Adjustment (Permission -Based)  
+ Unit prices are locked by default  
+ Price modification is allowed only if:  
+o Coordinator role permits it OR 
+o Manager approval is granted  
+Mandatory system logging:  
+ Old price  
+ New price  
+ Changed by  
+ Date & time  
+ Change reason  
+Hard rule:  
+Inspectors and trainers never see prices . 
+5. Create Preloaded Execution Items (Critical Requirement)  
+For each selected service item with planned quantity > 0, the system generates preloaded 
+execution instances , based on the service_versio n. 
+Example  
+ Inspection – Mobile Crane – Qty 3  
+→ Creates:  
+ Mobile Crane #1  
+ Mobile Crane #2  
+ Mobile Crane #3  
+ NDT – MPT – Qty 1  
+→ Creates:  
+ MPT Test #1  
+These execution instances:  
+ Are visible to inspectors/trainers  
+ Eliminate dropdown searching in the field  
+ Are later linked to:  
+
+=== Page 27 ===
+
+o actual equipment (via registry/QR/sticker)  
+o actual persons (operators/trainees)  
+Applies to:  
+ Inspections  
+ Testing (NDT and non -NDT)  
+ Operator Certification (person -based)  
+ Training topics / participant slots  
+This step is essential to make field  execution fast, structured, and error -free. 
+6. Assignment & Teaming  
+Coordinator assigns personnel to the JO:  
+ One or more Inspectors  
+ Trainers / Examiners (if applicable)  
+ Optional Lead Inspector  
+Capabilities  
+ Multiple inspectors can work on the same JO  
+ Inspe ctor + Trainer can be assigned together  
+ Any assigned inspector’s name may appear on final certificates (based on actual 
+execution)  
+ Regional teams are supported  
+System actions  
+ Sends notifications to all assigned staff  
+ Records assignment history  
+Delegation  
+ Assigned inspector may reassign/share the JO with another inspector  
+ Coordinator is notified  
+ All reassignments are audit logged  
+7. JO Creation & Status  
+ 
+
+=== Page 28 ===
+
+Coordinator clicks “Create Job Order”  
+System:  
+ Generates JO number  
+ Sets JO status:  
+o Draft (not yet assigne d), or 
+o Scheduled (assigned)  
+ Locks the initial planned scope  
+ Allows controlled coordinator edits  during execution phase  
+ Stores permanent linkage to:  
+o Original quotation (commercial intent)  
+o JO-selected scope (operational truth)  
+8. Change Handling During Execu tion (Operational Reality)  
+8.1 Quantity Changes by Inspector  
+During execution:  
+ Some equipment may not be inspected  
+ Some trainees may not attend  
+Inspector records actual executed quantities . 
+System:  
+ Preserves original planned quantity  
+ Stores actual executed  quantity separately  
+ Maintains full traceability:  
+o Quoted → Planned → Executed  
+8.2 Additional Items Added at Site (Offline -Safe)  
+If the client requests additional inspection or testing services  at site:  
+Inspector may:  
+ Add new service item from the Service M aster Catalog  
+ Enter quantity and justification notes  
+System behavior:  
+ Flags item as “Added at Site”  
+
+=== Page 29 ===
+
+ Blocks all price visibility  
+ Records:  
+o who added it  
+o when  
+o justification  
+Critical Execution Rule (Offline -Safe):  
+ Inspector is allowed to immediately execute  added -on-site items  
+ Inspector may:  
+o complete checklists / assessments  
+o include items in FIR  
+o generate draft reports/certificates (without background)  
+Coordinator approval is NOT required to proceed with execution.  
+This ensures:  
+ no execution delays in remote/ no-internet locations  
+ no loss of operational data  
+ no opportunity for silent execution outside the system  
+8.3 Approval & Pricing Gate Before Final Issuance (Commercial Control)  
+Before final issuance, publishing, or finance handoff , the system enforces a con trol gate:  
+If any items are marked “Added at Site”  and are Pending Coordinator Approval : 
+System blocks:  
+ final certificate issuance  
+ publishing to client  
+ finance submission  
+Coordinator must:  
+ Review added -on-site items  
+ Assign internal pricing  to each approved item  
+ Approve or reject the item  
+Once approved:  
+ Item becomes part of the JO operational scope  
+ Pricing is recorded internally  
+
+=== Page 30 ===
+
+ Item flows to Finance for invoicing  
+ Final issuance is unblocked  
+All actions are:  
+ Logged  
+ Attributed  
+ Fully traceable  
+9. Finance Reference Output (Clarity Only)  
+(Not a finance workflow)  
+Finance will later receive:  
+ Original quotation  
+ JO planned scope  
+ Actual executed quantities  
+ Approved on -site added items with coordinator -assigned prices  
+This forms a clean, auditable basi s for invoicing.  
+10. Inspection Request Capture (ISO/IEC 17020 – Controlled & 
+Mandatory)  
+Purpose  
+Ensure every Job Order has a controlled Internal Inspection Request record  that:  
+ documents what the client requested  
+ records how the request was received  
+ conso lidates scope and quantities  
+ provides objective evidence for ISO/IEC 17020  
+ becomes part of the controlled JO file  
+Key Principle  
+Regardless of how the request is received (PO, email, verbal), the system always generates an 
+Internal Inspection Request Form . 
+10.1 Mandatory Internal Inspection Request Form  
+ 
+
+=== Page 31 ===
+
+For every JO, the system generates one Internal Inspection Request Form . 
+This form is:  
+ Mandatory  
+ Non -deletable  
+ Version -controlled  
+ Audit logged  
+ Permanently linked to the JO  
+Clients are not required to submit this form themselves.  
+10.2 Timing Rule  
+The Inspection Request Form must be generated:  
+ After JO scope is finalized  
+ Before JO is marked Created / Scheduled  
+JO creation cannot complete  without this step.  
+10.3 Request Source Selection (Mandatory)  
+System prompt s: 
+“How was the inspection request received?”  
+Coordinator selects one: 
+1. Purchase Order (PO)  
+2. Email  
+3. Verbal Request  
+4. Other (configurable)  
+10.4 Auto -Populated Inspection Request Fields  
+System -generated form includes:  
+ Client name  
+ Project / site  
+ Client requestor /  contact  
+ Date of request (auto -derived)  
+ 
+
+=== Page 32 ===
+
+Date of Request Rule  
+ PO → PO issue date  
+ Email → email confirmation date  
+ Verbal → quotation issue date  
+Date is locked once generated.  
+10.5 Source Evidence Attachment  
+ PO → PO document attached  
+ Email → email PDF attach ed 
+ Verbal → internal form itself is evidence  
+ Other → optional supporting docs  
+Attachments support  the form; they do not replace it.  
+10.6 ISO/IEC 17020 Compliance Rules  
+ Exactly one Inspection Request Form per JO  
+ Form is mandatory, non -deletable, version -locked  
+ Source is declared and auditable  
+ All changes are traceable (who / when / why)  
+Key Design Principles (Developer Guidance)  
+ Quotation = commercial intent  
+ Job Order = operational truth  
+ Execution = factual truth  
+ No overwrites — only versioning an d deltas  
+ Inspectors never see prices  
+ Every change records:  
+o Who  
+o When  
+o Why  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+=== Page 33 ===
+
+Workflow: Sticker Management Module (Series & Inventory 
+Control)  
+Purpose  
+Provide strict control, traceability, and accountability  over inspection stickers by treating them 
+as controlled inventory , ensuring:  
+ every sticker number is traceable  
+ every used sticker is tied to a report  
+ misuse, wastage, or unreported inspections are detectable  
+ inspectors cannot use stickers without system records  
+1. Sticker Definition (Physical Reality ) 
+Sticker Types Covered  
+ Big Stickers  (large equipment)  
+ Small Stickers  (small tools)  
+Each physical sticker has:  
+ A pre-printed unique sticker number  
+ A common QR code  (same on all stickers)  
+o QR redirects to a verification webpage  
+o User enters sticker number or certificate number to retrieve report  
+The system does not generate individual QR codes.  
+2. Sticker Series Registration (Stock Entry)  
+Action: Register New Sticker Series  
+When stickers are received from printing facility:  
+Coordinator/Admin enters:  
+ Sticker type (Big / Small)  
+ Series start number (e.g. 0001)  
+ Series end number (e.g. 1000)  
+ Printing batch reference (optional)  
+
+=== Page 34 ===
+
+ Date received  
+System behavior:  
+ Creates individual sticker records  internally:  
+o Sticker #0001  
+o Sticker #0002  
+o … 
+o Sticker #1000  
+ All stickers star t with status: In Stock  
+This step is mandatory  before stickers can be issued.  
+3. Sticker Bundling (Operational Convenience)  
+Purpose  
+Allow bulk control while keeping individual traceability.  
+Coordinator can:  
+ Create bundles from registered series, e.g.:  
+o Bundle A: 0001 –0100  
+o Bundle B: 0101 –0200  
+Each bundle has:  
+ Bundle ID  
+ Sticker range  
+ Status  
+4. Issuing Stickers to Inspectors (Critical Control Point)  
+Action: Issue Sticker Bundle  
+Coordinator assigns a bundle to an inspector.  
+System records:  
+ Inspector name  
+ Sticker range issued  
+ Issue date  
+ Issued by (coordinator)  
+
+=== Page 35 ===
+
+Sticker status changes:  
+ From In Stock  
+ To Issued to Inspector  
+At this point:  
+ Inspector is fully accountable  for every sticker in the range  
+5. Inspector Sticker Usage During Inspection  
+Inspector Action (Field)  
+While preparing inspection data or report:  
+ Inspector must enter sticker number  applied to the equipment  
+System Validation (Hard Rules)  
+System checks:  
+ Sticker number exists  
+ Sticker is issued to that inspector  
+ Sticker status = Issued (not used / not invalid)  
+If valid:  
+ Sticker status changes to Used  
+ Sticker is automatically linked to:  
+o Equipment  
+o Job Order  
+o Inspection report / certificate number  
+If invalid:  
+ System blocks submission  
+ Inspector cannot proceed  
+6. Automatic Sticker –Report Mapping  
+System maintains a live sticker usage table : 
+Sticker No  Inspector  Status  Report No  JO No  Equipment  
+
+=== Page 36 ===
+
+0043  Inspector A  Used  RPT-2025 -041 JO-118 Mobile Crane  
+0044  Inspector A  Used  RPT-2025 -042 JO-118 Forklift  
+0045  Inspector A  Unused  — — — 
+This table is not editable . 
+7. Unused & Suspicious Sticker Detection (Key Feature)  
+Automatic Monitoring  
+System continuously checks:  
+ Stickers issued but never reported used  
+ Large gaps in usage  
+ Stickers issued long ago but still unused  
+Highlighting Rules  
+ Stickers unused beyo nd next issuance → Flagged  
+ Frequent unused stickers → Inspector risk indicator  
+This directly exposes:  
+ Unreported inspections  
+ Potential misuse  
+ Loss or leakage  
+8. Lost / Damaged Sticker Reporting  
+Inspector Action  
+If sticker is:  
+ Lost 
+ Damaged  
+ Misprinted  
+Inspector must:  
+ Mark sticker as Lost/Damaged  
+ Provide reason (mandatory)  
+ Upload picture of damaged sticker  
+
+=== Page 37 ===
+
+The event must be verified and marked accepted by coordinator  
+System:  
+ Marks sticker as Invalid  
+ Prevents future use  
+ Logs incident permanently  
+9. Verification via Common QR Code  
+Public Verification Flow  
+Anyone scans QR on:  
+ Sticker OR  
+ Certificate  
+System opens verification page : 
+ User enters:  
+o Sticker number OR  
+o Certificate number Or  
+o Both  
+System displays:  
+ Inspection status  
+ Equipment details  
+ Validity  
+This keeps QR simple and robust.  
+10. Inspector Stock View & Requests  
+Inspector can view:  
+ Sticker range issued  
+ Used stickers  
+ Remaining stickers  
+ Lost/damaged stickers  
+Inspector can:  
+
+=== Page 38 ===
+
+ Request additional sticker bundles via system  
+11. Low Stock & Reorder Alerts  
+System -Level Monitoring  
+System tracks:  
+ Total unissued stock  
+ Issued but unused stock  
+Alerts:  
+ Low stock threshold reached → notify coordinator  
+ Reorder reminder generated  
+12. Management & Audit Reports  
+System provides reports:  
+ Stickers issued per inspector  
+ Stickers used vs issued  
+ Unused stickers per inspector  
+ Lost/damaged stickers  
+ Sticker → Report → Certificate traceability  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+=== Page 39 ===
+
+Job Order Execution Workflow  
+Inspection & Testing (Offline -First, Audit -Ready)  
+Inspector App – Offline -First Execution +  FIR + Certificate/Test Report Issuance + Publishing + 
+Finance Handoff  
+This is the end -to-end execution workflow for inspection and testing job orders , including 
+offline -first operation, FIR generation, client signature or acceptance, optional approval routing, 
+certificate/test report issuance, letterhead control, publishing, and finance handoff.  
+0. Purpose  
+Define the end -to-end operational workflow for executing inspection and testing services  
+under a Job Order (JO), including:  
+• execution against prelo aded service -based scope  
+• evidence capture and checklist completion  
+• controlled sticker usage (where applicable)  
+• FIR generation and client sign -off (or client -absent email acceptance)  
+• certificate / test report package generation (with optional approv al routing)  
+• letterhead (paper) control via background finalization  
+• publishing and verification  
+• finance handoff for invoicing  
+This workflow applies to:  
+• Equipment Inspections  
+• NDT services  
+• Non -NDT testing services (load tests, pressure tests, func tional tests, Amma test, Hydro tests 
+etc.)  
+A. Preconditions  
+
+=== Page 40 ===
+
+ 
+A1. Job Order Setup  
+• Job Order exists and includes:  
+ Client + site/project + client contact(s)  
+ At least one client email address (mandatory if FIR signature is not captured)  
+ One or more service l ine items  (Inspection / NDT / Testing / etc.)  
+ Preloaded execution instances  generated from the JO scope  
+(e.g., Mobile Crane #1…#N, Load Test #1…#N, UT Test #1…#N)  
+Important Alignment  
+Execution is driven by Service Versions  from the Service Registry, not 
+free-form equipment selection.  
+A2. Inspection / Testing Request Record  
+• An Internal Inspection Request Form  exists and is linked to the JO  
+• Generated during JO creation  
+• No approval workflow applies to this form  
+A3. Asset  & Equipment Policy  
+System policy defines whether:  
+• assets must exist in Equipment Registry, OR  
+• inspector may add unregistered equipment (creates draft asset pending sync)  
+A4. Service Policy (from Service Registry)  
+For each service version, the system d efines:  
+• checklist behavior  
+ default checklist level (Simplified / Expanded / Critical)  
+ whether Critical is mandatory  
+• approval policy  
+
+=== Page 41 ===
+
+ approval required (Yes/No)  
+ approver role (Technical Manager / NDT Manager / etc.)  
+• certificate / test report outputs  
+• validity rules (if applicable)  
+• sticker requirement:  
+ Required  
+ Optional  
+ Not Applicable  
+B. Inspector Execution (Offline -First)  
+B1. Receive Assignment  
+• Online: notification  
+• Offline: JO available if previously synced  
+B2. Open Job Order  
+UI displays:  
+• Client / site / project  
+• Service -based scope summary  
+• Assigned service line items  
+Inspector taps Start  
+System records:  
+• started_at timestamp  
+• JO status → In Progress (local if offline)  
+B3. Select Service Line Item & Execution Instance  
+Examples:  
+• Inspe ction – Mobile Crane → Mobile Crane #1  
+
+=== Page 42 ===
+
+• NDT – Magnetic Particle Test → MPT #1  
+• Testing – Load Test → Load Test #1  
+UI displays:  
+• Preloaded execution instances  
+• Option to add additional execution instances (policy -controlled)  
+B4. Asset / Subject Identification (Service -Dependent)  
+Depending on service type:  
+Inspection Services  
+• Select from:  
+1. Preloaded equipment instance  
+2. Equipment Registry  
+3. Add ad -hoc equipment (draft asset)  
+Testing Services (NDT / Non -NDT)  
+• Equipment selection may be:  
+ mandatory (e. g., load test on crane)  
+ optional (e.g., weld UT)  
+ descriptive only  
+• Service definition governs requirement  
+B5. Equipment / Subject Data Capture  
+• Capture or confirm identity data:  
+ Manufacturer, model, serial, capacity, etc. (if applicable)  
+• OCR via data p late allowed  
+• Human confirmation mandatory  
+• Stored as inspection/test snapshot  
+
+=== Page 43 ===
+
+ 
+If previous inspection exists:  
+• Inspector may enter or scan previous sticker number  to preload identity  
+• If no sticker applies → handled in B11  
+B6. Validity Selection (If Applicable)  
+• Quick buttons: 1 / 3 / 6 / 12 months + Custom  
+• Validity rules enforced by Service Registry  
+• If inspector exceeds allowed validity:  
+ approval workflow triggered automatically  
+B7. Checklist Execution (Service -Driven)  
+Checklist is loaded from Document Registry  via Service Version . 
+Checklist behavior:  
+• Default checklist level applied  
+• Expansion allowed unless locked  
+• Mandatory Critical checklist enforced where defined  
+Checklist supports:  
+• Pass / Fail / N/A  
+• Numeric readings with units  
+• Comm ents  
+• Photo evidence (mandatory on Fail)  
+Header fields include:  
+• Service name  
+
+=== Page 44 ===
+
+• Equipment / subject details (if applicable)  
+• Standard reference  
+• Work instruction reference  
+• Manufacturer  
+• Model / Year  
+• VIN / Serial No.  
+• Last date of inspection (manual entry or fetched from previous record)  
+• Inspector name  
+• Date of inspection  
+• Next date of inspection  
+• Location (Site / project Details as per JO)  
+• JO number  
+• Any additional fields configured at checklist creation  
+B8. Tools Used  
+• Inspector sel ects tools used (from Tools Registry)  
+• Tool calibration visibility enabled  
+• Mandatory tool selection enforced where defined  
+ Every inspector shall have a set of tools issued to him in Tools registry. Those all ll appear as 
+tabs and he can just click on ta bs to mention the ones used during inspection.  
+B9. Evidence Capture  
+• Photos / documents:  
+ captured live OR uploaded  
+• Minimum evidence enforced per service  
+
+=== Page 45 ===
+
+• Stored offline and synced later  
+B10. Outcome  
+Inspector records outcome:  
+• Pass / Fail / Not Inspected  
+Fail handling:  
+• Mandatory findings notes  
+• Mandatory evidence  
+• Voice -to-text allowed  
+B11. Sticker / Tag Handling (Controlled & Conditional)  
+B11.1 Sticker Requirement Decision  
+Sticker behavior is governed by Service Version : 
+Case A – Sticker Req uired  
+• Inspector must enter or scan sticker number  
+• Validation:  
+ sticker exists  
+ issued to inspector  
+ unused  
+Case B – Sticker Optional  
+• Inspector may enter sticker number OR select:  
+→ Sticker Not Applicable  
+Case C – Sticker Not Applicable  
+(Examples:  
+• NDT services  
+
+=== Page 46 ===
+
+• Non -tagged equipment  
+• Certain inspections defined by Quality)  
+• Inspector must explicitly select:  
+→ Sticker Not Applicable  
+• System records justification automatically via service policy  
+System will not allow submission  if: 
+• sticker is required AND  
+• neither a sticker number nor “Not Applicable” is selected  
+B11.2 Offline Sticker Reservation  
+• Offline: sticker marked Reserved (Offline)  
+• Final validation occurs on sync  
+Sticker becomes Used  only when:  
+• execution is finalized AND  
+• certifi cate/test report record is created  
+B12. Repeat Loop  
+Repeat B3 –B11 for all execution instances.  
+B13. Added -at-Site Scope  
+• Inspector may add additional services/equipment  
+• Marked as Added at Site  
+• Execution allowed immediately (offline -safe)  
+• Pricing hid den 
+• Coordinator assigns price later before final issuance  
+B14. Complete Site Work  
+
+=== Page 47 ===
+
+Inspector taps Complete Today’s Work  
+Triggers FIR generation.  
+C. FIR (Field Inspection Report) + Client 
+Signature / Client Absent Email Acceptance  
+C1. FIR Generation Rule (Multiple FIRs per JO)  
+Under one Job Order, there can be multiple FIRs , generated whenever the inspector completes 
+a subset of work.  
+FIR Numbering (per JO)  
+FIR number format:  
+ FIR-JO<JO_NUMBER> -01 
+ next FIR in same JO: …-02, …-03 etc. 
+ for a new JO, numbering  restarts at …-01 
+Trigger: each time inspector chooses to finalize a visit/subset and generate FIR.  
+C2. Auto -generate FIR Draft (Offline -Capable)  
+FIR aggregates all equipment handled in that FIR instance (subset), including:  
+ JO + client/site/project  
+ inspec tor name  
+ arrival/start time on site (if captured)  
+ equipment list (equipment type, serial no, manufacturer, sticker no) + outcomes  
+ tools used summary (as captured)  
+ timestamp + location fields if enabled (for indivisual inspector in HR module)  
+Offline: FIR saved as PendingSync . 
+C3. Signature Capture (Standard Case)  
+Client representative fields:  
+ name  
+ title 
+
+=== Page 48 ===
+
+ phone  
+ signature  
+Signature captured on inspector device.  
+FIR finalized and queued for sync.  
+C4. Client Absent / Signature Not Captured (Control led 
+Exception)  
+If signature cannot be captured, inspector selects:  
+ Client Absent / Not Available  (or similar controlled reason)  
+C4.1 Email Requirement Logic  
+System checks if client email exists on JO contact(s):  
+ If exists → proceed  
+ If missing → app prompts  inspector to enter client email (mandatory)  
+C4.2 System Email Acceptance Disclaimer  
+On issuance (after sync), system emails the FIR to the client contact with disclaimer text 
+embedded in the email:  
+ client was not present at time of FIR closure  
+ FIR is treated as accepted unless the client replies with objections within a defined 
+period (you may set this policy, e.g., 24 hours, or “promptly”)  
+C4.3 Evidence Binding  
+The sent email record (message metadata / PDF attachment / delivery record as available) 
+becomes part of FIR (last page) record as supporting evidence.  
+C5. FIR Issuance and Distribution  
+After sync:  
+ server generates FIR PDF  
+ auto -email FIR PDF to client contact  
+ inspector gets “Copy share link” (public -but-unguessable token link)  
+
+=== Page 49 ===
+
+D. Certificate / R eport Package Generation, 
+Approval, Issuance  
+D1. Generate Draft Package  
+System generates documents per completed equipment instance / line item.  
+Failed Item Handling  
+ Certificates for Failed items are still issued with status “Failed”  
+ Failed certificates do not require  letterhead number entry  
+ Failed certificates may be rendered with background (letterhead) by default  and are 
+publishable without letterhead control  
+ 
+D2. Optional Approval Routing (Policy -Driven)  
+ 
+If requires_approval = true for that equipment subtype/line item:  
+ system notifies configured approver role  
+ approver approves/rejects  
+ on rejection, inspector receives reason and rework required  
+If approval not required:  
+ documents can be issued immediately  
+D3. Certificate Issuance  (Digital Plain Print Version)  
+On issuance:  
+ system creates official PDF without background  (plain) intended for printing  
+ inspector and relvant document controller receives notification  
+D3.1 Numbering Rule  
+Certificates must be uniquely numbered, non -sequent ial and non -guessable.  
+
+=== Page 50 ===
+
+Prefix contains the string you specified only in the certificate numbering format , not in 
+narrative text, e.g.:  
+ TUVINSP -JO01 -15975  
+Next could be:  
+ TUVINSP -JO01 -21282  
+(Only used as the internal visible certificate identifier string.)  
+E. Letterhead Control and Background 
+Finalization  
+E1. Background Definition  
+“Background” refers to Times United’s letterhead template overlay  used by the system for final 
+archival rendering, matching the printed letterhead design.  
+E2. Printing on Pre -numbe red Letterhead  
+Likely desktop flow:  
+ Inspector or relevant document controller prints the no-background  PDF onto the pre -
+numbered letterhead paper.  
+E3. Enter Letterhead/Paper Number  
+Inspector or relevant document controller enters paper number per certifica te. 
+System validates:  
+ number not already used  
+ correct format (configured)  
+E4. Generate Final Archival Digital Copy  
+System re -renders the certificate with:  
+ letterhead background overlay  
+
+=== Page 51 ===
+
+ embedded paper/letterhead number  
+This becomes the controlled archival digital version (no scanning required).  
+F. Publish to Client  
+F1. Publish Documents  
+Authorized roles (inspector/document controller/coordinator) can publish.  
+Client access methods:  
+ client portal, or  
+ shareable token link (public -but-unguessable)  
+ download and  share pdf  
+F2. Publishing Rules by Outcome  
+ Failed certificates:  publishable immediately (no letterhead dependency)  
+ Passed certificates:  publishable once final archival copy is generated (paper number 
+recorded)  
+F3. JO Closure  
+JO is marked Closed  once:  
+ requi red documents are issued and published (as per scope), AND  
+ FIR(s) are issued for the completed work  
+G. Offline Sync and Conflict Resolution (Explicit 
+Rule)  
+G1. Sticker Conflicts  
+Handled per Section B11 (Reserved → Used; reassign if conflict).  
+G2. New/Unreg istered Equipment Conflicts  
+
+=== Page 52 ===
+
+On sync, if a newly created offline equipment record matches an existing registry record (e.g., 
+same serial/VIN):  
+ system prompts merge/attach to existing equipment record  
+ prevents duplicate asset creation  
+ logs merge decision  
+G3. Evidence Upload Failures  
+If evidence fails to upload:  
+ inspection submission remains PendingSync  
+ app prompts retry  
+ system prevents issuance if mandatory evidence is missing (policy)  
+H. Finance Handoff and Invoicing  
+H1. Send JO Summary to Finance  
+System ema ils Finance (or creates finance task) including:  
+ services delivered (actual executed quantities)  
+ equipment list, operators List (category and quantity), Trainees List (category and 
+quantity), Conducted Tests Details  
+ certificate numbers  
+ quotation reference  
+ approved Added -at-Site pricing references (entered by coordinator after approval)  
+H2. Finance Updates JO  
+Finance enters:  
+ invoice number  
+ invoice amount  
+System sets JO status to Invoiced . 
+Key Design Principles  
+ Offline -first with controlled sync  
+ Preloaded execution instances  reduce field friction and prevent scope hiding  
+
+=== Page 53 ===
+
+ No price visibility to inspectors  
+ No overwrites: only versioning and deltas  
+ Sticker inventory is controlled and auditable  (Reserved → Used)  
+ FIR is enforceable evidence  via signature or clie nt-absent email acceptance  
+ Letterhead number control is traceable  and produces final archival copy  
+ Publishing rules reflect pass/fail requirements  
+I . Checklist Quick -Completion Option (“All OK” Function)  
+Purpose  
+Reduce inspection execution time and inspector exposure in harsh environmental conditions by 
+allowing rapid completion of technical inspection checkpoints where risk and complexity 
+permit , without compromising mandatory equipment identification data or tra ceability.  
+Scope Limitation (Non -Negotiable Rule)  
+This function applies only to technical inspection checkpoints . 
+It does NOT apply to : 
+ Mandatory equipment identification information  
+ Equipment data capture (manufacturer, serial, capacity, etc.)  
+ Evidence ca pture requirements (photos, readings, notes)  
+ Any checklist item marked as mandatory by policy  
+Mandatory equipment information must always  be completed manually or loaded from 
+previous record using previous sticker no.  
+Function Description  
+For eligible equipment categories, the checklist UI shall include a dedicated action button:  
+“All OK”  
+This button appears:  
+ At the end of the technical inspection checkpoints  
+ Within the selected checklist level (Simplified / Expanded / Critical)  
+System Behavior (When “A ll OK” Is Selected)  
+Upon inspector action:  
+
+=== Page 54 ===
+
+• All visible technical checklist items in the current checklist level are automatically set to:  
+ Pass / OK  
+ No defects recorded  
+• Optional fields (comments, numeric readings) remain blank unless required by policy  
+• Mandatory evidence rules still apply (e.g., required photos or readings must still be captured)  
+• The inspector must explicitly confirm  the action via a confirmation prompt:  
+“Confirm that all technical inspection checkpoints have been verified 
+and are co mpliant.”  
+Equipment Registry Control (Policy -Driven)  
+Availability of the “All OK”  function is controlled at the Equipment Registry level . 
+Each equipment category/subtype includes a policy flag:  
+Allow Quick Checklist Completion (All OK):  YES / NO  
+Rules:  
+ If YES: 
+o “All OK” button is visible and enabled  
+ If NO: 
+o “All OK” button is hidden  
+o Inspector must manually complete each checklist item  
+Risk-Based Application Guidance (Design Intent)  
+Typically enabled  for: 
+ Small tools  
+ Low-risk equipment  
+ Simple, repetitive in spections  
+ Visual -only inspection categories  
+Typically disabled  for: 
+ Cranes  
+ Lifting equipment  
+ Pressure systems  
+
+=== Page 55 ===
+
+ High -risk or regulated assets  
+ Equipment requiring detailed measurements or multiple evidence points  
+Audit & Traceability Rules  
+ 
+• System logs usage of the “All OK” function:  
+ Inspector name  
+ Date & time  
+ Equipment type  
+ Checklist level used  
+• Excessive or inappropriate use of this function can be reviewed via audit reports (optional 
+KPI).  
+Fail-Safe Rule  
+If any checklist item within the selected leve l is marked as:  
+ Mandatory individual confirmation  
+ Mandatory numeric input  
+ Mandatory evidence  
+Then:  
+ That item is excluded  from the “All OK” auto -completion  
+ Inspector must complete it manually before submission  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+=== Page 56 ===
+
+Workflow: Operator Certification Execution  
+Purpose  
+Enable an Inspector / Trainer (Assessor)  to complete Operator Certification  within an existing 
+Job Order (JO) using two execution modes:  
+ On-Site (face -to-face assessment)  
+ Off-Site (online assessment via secure link)  
+Certification consists of two mandatory parts : 
+1. Proforma  – Operator identity, experience, previous training/certification  
+2. Assessment  – Trade -specific questions (and practical confirmation)  
+Primary output:  
+✅ Wallet Card (Operator Card)  
+⚠️ A4 Certificate issu ed only when required by client  
+General Rules (Applies to Both Modes)  
+ Operator Certification must exist in the JO  
+ Preloaded operator categories/slots come from JO  
+ Inspector must review and finalize  every candidate  
+ No candidate becomes Finalized  without ins pector approval  
+A) On -Site Operator Certification  
+(Inspector & Operator Face -to-Face)  
+1. Select JO and Service  
+ Inspector opens JO (offline -capable)  
+ Selects Operator Certification  
+ Chooses mode: On-Site 
+2. Choose Candidate Slot (From JO)  
+System shows preloaded slots, e.g.:  
+ Mobile Crane Operator #1, #2  
+
+=== Page 57 ===
+
+ Motor Grader Operator #1 …  
+Inspector actions:  
+ Selects an existing slot  
+OR 
+ Adds New Category / Slot  if site reality differs  
+Change handling:  
+ New slot marked Added at Site  
+ Pending coordinator approval  
+ Candidate data can be collected regardless  
+3. Identity & Photo Capture  
+Inspector must:  
+ Capture / upload Operator ID  
+ Capture / upload Operator photo  
+ Enter:  
+o Operator name  
+o ID number  
+o Mandatory profile fields (template -driven)  
+Validation rules:  
+ ID number mandatory  
+ Minimum:  
+o 1 ID image  
+o 1 operator photo  
+4. Proforma (Part 1)  
+Inspector completes proforma based on operator answers:  
+ Years of experience  
+ Previous training  
+ Previous certifications:  
+o Type  
+o Issuer  
+o Issue & expiry date  
+
+=== Page 58 ===
+
+o Upload previous certificate image (if  exists)  
+ Other mandatory fields (template -driven)  
+5. Assessment (Part 2)  
+Inspector opens assessment template for selected category.  
+Completion modes:  
+ Operator answers directly, OR  
+ Inspector records verbal answers  
+Special control:  
+ Inspector may select “All answers correct”  
+ System prompts confirmation:  
+“You confirm the operator has correctly answered all assessment 
+questions.”  
+6. Operator Signature & Inspector Outcome  
+ Capture Operator digital signature  (mandatory)  
+ Inspector records:  
+o Outcome: Pass / Fail / Inc omplete  
+o Inspector confirmation comments  
+o Additional remarks (optional)  
+7. Repeat & Save  
+ Repeat steps for all operator slots  
+ Each completed candidate saved as:  
+Completed Candidate Record  
+ Inspector may continue other JO services  
+B) Off -Site Operator Certifica tion 
+(Operator Online, Inspector Not Present)  
+ 
+
+=== Page 59 ===
+
+1. Select JO and Service  
+ Inspector opens JO  
+ Selects Operator Certification  
+ Chooses mode: Off-Site 
+2. Create Off -Site Candidate Invitation  
+Inspector enters:  
+ Operator name  
+ Operator ID number  
+ Operator category (from slot or selected)  
+System generates:  
+ Secure shareable link  
+ Password / OTP (configurable)  
+ Expiry window (default e.g. 4 hours)  
+Inspector shares link manually (WhatsApp/SMS).  
+3. Operator Login (Web)  
+Operator logs in using:  
+ ID number  
+ Password / OTP  
+Secur ity controls:  
+ Rate -limited attempts  
+ Auto -lock after failed attempts (configurable)  
+ Session timeout (e.g. 2 hours)  
+4. Live Capture (Strict)  
+Operator must:  
+ Take live selfie  (camera only)  
+ Take live ID photo  (camera only)  
+Rules:  
+
+=== Page 60 ===
+
+ No file upload allowed  
+ Basic image quality checks enforced  
+5. Proforma (Part 1)  
+Operator completes:  
+ Experience  
+ Training history  
+ Certification history  
+ Issue / expiry dates  
+ Mandatory fields from template  
+6. Assessment (Part 2)  
+Operator completes assessment questions.  
+7. Operator Signature & Submit  
+ Operator signs digitally  
+ Submits assessment  
+System:  
+ Marks candidate = Submitted  
+ Notifies inspector  
+8. Inspector Review & Final Outcome  
+Inspector reviews submission and records:  
+ Outcome: Pass / Fail / Incomplete  
+ Confirmation comments  
+ Additional remarks  
+ Confirms Practical Assessment Done  (checkbox)  
+Only after this step does the candidate become Finalized . 
+9. Repeat  
+Inspector repeats for other off -site candidates.  
+
+=== Page 61 ===
+
+Change Handling (Both Modes)  
+1. Extra Candidates / Category Mismatch  
+ Inspe ctor can add new category/slot  
+ Marked Added at Site  
+ Pending coordinator approval  
+ Billing inclusion depends on approval  
+2. No -Show / Incomplete  
+Inspector marks slot as:  
+ No-show  
+ Not assessed  
+ Incomplete  
+This directly affects actual performed quantity . 
+Certifi cate & Wallet Card Issuance (Corrected Logic)  
+Default Rule  
+✅ Wallet Card is issued in ~98% of cases  
+⚠️ A4 Certificate issued only if client requires  
+Printing & Numbering Workflow (Aligned with Training)  
+1. Selection Before Completion  
+Before finalizing operator certification, inspector selects:  
+ ✅ Issue Wallet Card only  
+OR 
+ ✅ Issue Wallet Card + A4 Certificate  
+2. Initial Generation (For Printing)  
+System generates:  
+ Wallet Cards – without background  
+
+=== Page 62 ===
+
+ A4 Certificates – without background  (only if selected)  
+ Every Wallet Card and Certificate has a unique number  
+2.1 Numbering Rule  
+Wallet cards and Certificates must be uniquely numbered.  
+ Waalet card Series will be  
+JO number -01, 02, 03  
+e.g 1900 -01, 1900 -02, 1900 -03 
+ Certificate No  
+In Assessment case, Certificate  will be same as Wallert Card  
+Only for:  
+ Finalized  
+ Passed candidates  
+3. Physical Printing  
+Inspector / Relevant Document Controller:  
+ Prints wallet cards on pre-numbered physical cards  
+ Prints certificates on pre-numbered certificate letterhead  
+4. Number Entry  
+User enters:  
+ Wallet card number (printed on backside)  
+ Certificate paper number (front, if applicable)  
+5. Final Official Copies  
+System:  
+ Validates uniqueness  
+ Generates:  
+o Final wallet card with background + card number  
+o Final certificate with background + pape r number  
+
+=== Page 63 ===
+
+ Locks records  
+ Archives official copies  
+Required Data per Candidate (Developer Checklist)  
+ Mode: On -site / Off -site 
+ Operator category & slot  
+ Name & ID number  
+ Proforma data (template -driven)  
+ Assessment answers  
+ Attachments:  
+o ID image(s)  
+o Operator photo (on-site) OR live selfie (off -site)  
+o Live ID capture (off -site)  
+ Operator signature  
+ Inspector outcome & comments  
+ Status:  
+o Draft → Submitted → Reviewed → Finalized  
+Key Controls & Improvements  
+ Inspector must finalize  every candidate  
+ Wallet card -first logic refl ects real practice  
+ Printing separated from official record creation  
+ Fully aligned with Training & JO workflows  
+ Audit -ready and fraud -resistant  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+=== Page 64 ===
+
+Workflow: Training Execution (Trainer)  
+Purpose  
+Enable trainers to:  
+ deliver training (on -site / off-site)  
+ capture trainee identity and attendance digitally  
+ conduct assessments digitally  
+ issue training certificates AND wallet cards  
+ close the training service under the Job Order  
+ trigger finance invoicing based on actual attendance  
+1. Preconditions  
+ Job Order exists  
+ Training service exists in the JO  
+ Trainer (or Inspector acting as Trainer) is assigned to the JO  
+ Training materials are available in the system  
+2. Trainer Prepares for Training  
+ Trainer opens JO → Training  
+ Trainer accesses training materials:  
+o View -only  
+o Offline -capable (securely cached)  
+o Selects session type:  
+ 1 hour / 4 hour / 6 hour  
+o Can hide allowed slides (no content editing)  
+ Materials remain accessible from JO Issued → JO Closed  
+3. Start Training & Attendance (QR Stage 1)  
+Trainer clicks “Start  Training”  
+System:  
+ Marks training status = In Progress  
+ Generates Attendance QR (QR Stage 1)  
+ QR is time -bound (e.g., 30 minutes)  
+Trainee Action (Attendance QR)  
+
+=== Page 65 ===
+
+Each trainee scans the QR and completes:  
+ Live selfie (camera only)  
+ ID photo (camera or upload – configurable)  
+ Name  
+ ID number  
+ WhatsApp number  
+System:  
+ Records attendance timestamp  
+ Marks trainee as Present  
+ Links trainee to training session  
+ Attendance QR expires automatically  
+4. Training Delivery  
+ Trainer delivers training content  
+ No system interaction re quired during delivery  
+5. Start Assessment (QR Stage 2)  
+Trainer clicks “Start Assessment”  
+System:  
+ Generates Assessment QR (QR Stage 2)  (separate from attendance QR)  
+ QR is time -bound (trainer -controlled)  
+Trainee Action (Assessment QR)  
+ Trainee scans Assessment QR  
+ System validates:  
+o Attendance already completed  
+o If not → trainee is redirected to attendance  
+ Assessment opens on trainee device  
+6. Assessment Completion  
+Assessment includes:  
+ Trade -specific questions  
+ Auto -marking by system  
+
+=== Page 66 ===
+
+ Score calculation  
+ Pass / fail criteria  
+Trainee:  
+ Completes assessment  
+ Signs digitally on device  
+ Submits  
+System:  
+ Saves responses  
+ Locks attempt  
+ Computes final result  
+7. Trainer Review & Resit (If Required)  
+Trainer views live summary:  
+ Attended vs absent  
+ Completed vs pending  
+ Scores  and pass/fail results  
+If resit is required:  
+ Trainer generates Resit Link with OTP  
+ Link sent via WhatsApp  
+ Trainee logs in using ID + OTP  
+ Reattempts assessment remotely  
+System:  
+ Stores attempt history  
+ Keeps final result  as authoritative  
+8. Complete Training (Mandatory Controls)  
+Before completing training, trainer must:  
+ Upload signed physical attendance sheet  (mandatory backup evidence)  
+ Set certificate validity period  
+ Confirm outputs to be issued:  
+o ✅ A4 Training Certificate  
+
+=== Page 67 ===
+
+o ✅ Wallet Card (Training / Operator Card)  
+o (In practice, almost always both)  
+Trainer clicks “Complete Training”  
+System:  
+ Locks attendance & assessment data  
+ Calculates actual participants  
+ Marks training status = Completed  
+9. Certificate & Wallet Card Generation  (Initial – For Printing)  
+System generates:  
+ A4 Training Certificates – without background  
+o Wallet Cards – without background   
+o Front & back layout applied  
+o Wallet card number placeholder on backside  
+Generated only for : 
+ Attended trainees  
+ Passed trainees (if assessment is required)  
+These files are print -ready drafts . 
+9.1 Numbering Rule  
+Wallet cards and Certificates must be uniquely numbered . 
+ Certificate No  
+TUVINSP -TRG -JO Number – 01 e.g TUVINSP -TRG-1900 -01 
+TUVINSP -TRG -JO Number – 02 
+TUVINSP -TRG -JO Number – 03 
+TUVINSP -TRG -JO Number – 04 
+ Waalet card Series will be  
+JO number -01, 02, 03   
+
+=== Page 68 ===
+
+e.g 1900 -01, 1900 -02, 1900 -03 
+10. Physical Printing & Number Assignment  
+Trainer or authorized Document Controller:  
+ Prints:  
+o Certificates on pre-numbered certificate letterhead  
+o Wallet cards on pre-numbered physical wallet cards  
+After printing, user enters into system:  
+ Certificate letterhead paper numbers (front)  
+ Wallet card numbers (printed on backside)  
+11. Final Certificate & Wallet Card Generation (Official Copies)  
+System:  
+ Validates uniqueness of all numbers  
+ Generates:  
+o Final A4 certificate with background + paper number  
+o Final wallet card with background + wallet card number  
+ These versions become:  
+o Official  
+o Archived  
+o Non -editable  
+12. Publish to Client  
+Trainer / Document Control ler / Coordinator:  
+ Publishes certificates and wallet cards  
+Client can:  
+ Access via client portal  
+ Use shareable links  
+ Download copies  
+13. Submit Job Order (Training)  
+
+=== Page 69 ===
+
+Trainer submits JO after:  
+ Training completed  
+ Certificates issued  
+ Wallet cards issued  
+System:  
+ Locks training records  
+ Sends training execution summary  to Finance  
+ Finance invoices based on actual attendance  
+14. Finance Handling for Training Workflow  
+14. Training Job Order Handoff to Finance  
+Trigger  
+ 
+When trainer submits the Job Order (Training):  
+System automatically:  
+ Marks Training Service = Finance -Ready  
+ Sends notification to Finance  
+ Pushes training data into Finance Queue  
+15. Training Billing Snapshot (System -Generated)  
+System creates a read -only Billing Snapshot  for Finance using:  
+Inputs  
+ Accepted quotation (training line items & unit prices)  
+ JO planned quantities  
+ Actual attendance count  
+ Number of:  
+o Training certificates issued  
+o Wallet cards issued  
+ Any approved site changes (if applicable)  
+Billing Snapshot Includes  
+
+=== Page 70 ===
+
+ Training title  
+ Client & project  
+ Plan ned participants (from JO)  
+ Actual participants (from attendance)  
+ Unit price (from quotation)  
+ Line totals  
+ VAT %  
+ Subtotal, VAT amount, grand total  
+Finance can edit quantities or prices  
+16. Finance Review (Validation Only)  
+Finance reviews:  
+ Attendance vs billed quantity  
+ Certificate & wallet card issuance  
+ VAT and totals  
+ 
+Finance may:  
+ Add internal remarks  
+ Flag discrepancies to Coordinator  
+17. Invoice Generation (Training)  
+17.1. Finance Updates JO  
+Finance enters:  
+ invoice number  
+ invoice amount  
+System sets JO status to Invoiced . 
+ 
+
+=== Page 71 ===
+
+Workflow: Certificate Format Authoring (Quality -Controlled)  
+Purpose  
+Enable the Quality Department  to design, control, and maintain inspection/training certificate 
+formats  that are:  
+ standardized  
+ compliant with standards  
+ automatically populated by the system  
+ version -controlled and audit -ready  
+Certificates authored here are later used automatically  during execution workflows.  
+1. Ownership & Roles  
+Owners  
+ Quality Manager  
+ Quality Executive  
+ Management Representative (MR)  
+ 
+Permi ssions  
+ Create new certificate formats  
+ Edit drafts  
+ Approve and publish formats  
+ Retire old formats  
+Inspectors, trainers, coordinators:  
+ No access  to authoring  
+ Use published formats only  
+2. Create New Certificate Format  
+Quality user clicks “Create Certificate Format”  
+Mandatory Metadata  
+ Certificate name  
+
+=== Page 72 ===
+
+(e.g., “Lifting Equipment Inspection Certificate”)  
+ Certificate type:  
+o Inspection  
+o NDT  
+o Training  
+o Operator Certification  
+ Applicable equipment type(s) or training type(s)  
+ Language (if multilingual)  
+ Effective date  
+3. Ce rtificate Template Structure  
+Certificate format consists of structured sections , not free text.  
+3.1 Header Section  
+Quality defines:  
+ Company name & logo  
+ Certificate title  
+ Certificate number placeholder  
+ Accreditation logos (if applicable)  
+3.2 Equipment / Training Information Section  
+Fields mapped from system data:  
+ Equipment name  
+ Client name  
+ Project / site  
+ Equipment identification (serial, model, capacity, etc.)  
+ Inspection date  
+ Validity period  
+These fields are locked mappings , not editable by inspectors.  
+3.3 Standards & References Section (Auto -Populated)  
+Quality links:  
+ Inspection standard(s)  
+System automatically pulls:  
+
+=== Page 73 ===
+
+ Correct references from Equipment Registry  
+ Displays them on certificate  
+Inspector cannot alter these references.  
+3.4 Results Section  
+Qualit y defines layout for:  
+ Pass / Fail status  
+ Limitations or remarks  
+ Summary statements  
+Content is populated automatically from execution data.  
+3.5 Signatures & Authorization  
+Quality defines:  
+ Signature blocks:  
+o Inspector  
+o Technical Manager / Approver  
+ Signature order (if approval required)  
+ Designation text  
+Signatures are applied digitally by the system.  
+3.6 Footer & Legal Text  
+Quality adds:  
+ Mandatory legal clauses  
+ Disclaimer text  
+ QR / verification statement  
+ Page numbering  
+4. Field Mapping (Critical Step)  
+Quality maps each certificate field to:  
+ System data source  
+ Checklist result  
+ Equipment registry field  
+
+=== Page 74 ===
+
+This ensures:  
+ No manual typing  
+ No missing data  
+ Full consistency  
+5. Preview & Validation  
+Before publishing, Quality can:  
+ Preview certificate using sample data  
+ Validate:  
+o All mandatory fields are mapped  
+o No unresolved placeholders  
+o Layout correctness  
+System blocks publishing if required fields are missing.  
+6. Approval & Publishing  
+Certificate format lifecycle:  
+ Draft  
+ Approved  
+ Published  
+ Retired  
+Only Published  formats:  
+ Are selectable by the system  
+ Can be used for certificate generation  
+Publishing requires:  
+ Approval by Quality Manager or MR (configurable)  
+7. Version Control  
+Any change creates:  
+ New version number  
+ New effective date  
+
+=== Page 75 ===
+
+Rules:  
+ Old versions remain available for: 
+o Historical certificates  
+o Audit traceability  
+ New inspections use latest published version  
+No overwriting allowed.  
+8. Certificate Numbering Placeholders  
+Quality defines:  
+ Certificate number format placeholder  
+o e.g., TUVINSP -YYYY -XXXX  
+ Numbering is not sequential and not guessable  
+ 
+Format authoring does not consume numbers . 
+9. Background vs No -Background Handling  
+Quality defines:  
+ Background design (letterhead)  
+ System supports:  
+o No-background version (for printing)  
+o Final background version (archival)  
+Mapping is handled automatically.  
+10. Retirement of Certificate Formats  
+Quality may retire formats when:  
+ Standards change  
+ Accreditation scope changes  
+Retired formats:  
+ Cannot be used for new certificates  
+ Remain visible for old records  
+
+=== Page 76 ===
+
+Key Design Principles  
+ Certificate formats are controlled documents  
+ Inspectors never edit certificates  
+ All data is system -generated  
+ Every certificate is traceable to:  
+o Format version  
+o Checklist  
+o Equipment registry  
+o Approval decision  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+=== Page 77 ===
+
+Workflow: Finance & Invoicing  
+Purpose  
+Enable the Finance Department  to: 
+ receive completed Job Orders  
+ invoice based on actual executed quantities  
+ maintain financial traceability  
+ prevent billing errors and disputes  
+Finance does not control execution , only billing.  
+1. Entry Condition (Trigger)  
+A Job Order becomes Finance -Ready  when:  
+ All assigned services (inspection / training / operator certification, etc.) are submitted  
+ Certificates (if applicable) are issued  
+ Actual executed quantities are finalized  
+System action:  
+ Automatic ally notifies Finance  
+ Makes JO visible in Finance Queue  
+2. Finance Queue (Job Order List)  
+Finance users see:  
+ JO number  
+ Attached Approval e.g PO  
+ Client  
+ Project / site  
+ Service summary  
+ Execution date(s)  
+ Status: Pending Invoice  
+Finance cannot see:  
+ Checklists  
+ Inspection evidence  
+ Assessment details  
+
+=== Page 78 ===
+
+ 
+3. Billing Snapshot Creation (System -Generated)  
+System creates a Billing Snapshot  per JO using:  
+ Accepted quotation (original prices)  
+ Approved changes made during JO creation  
+ Approved additional items added at site  
+ Actual executed quantities  (not planned quantities)  
+Billing Snapshot contains:  
+ Service item  
+ Unit price (from quotation)  
+ Actual quantity  
+ Line total  
+ VAT %  
+ Subtotal, VAT amount, grand total  
+This snapshot is read -only  for Finance.  
+4. Finance Review (Validation Only)  
+Finance reviews:  
+ Quantities  
+ Services included  
+ VAT %  
+ Totals  
+Finance may:  
+ Add internal notes  
+ Flag discrepancies (non -editing)  
+Finance may NOT:  
+ Change quantities  
+ Change prices  
+ Change VAT rules  
+Any discrepancy must be escalated to Coordinator.  
+
+=== Page 79 ===
+
+1. Invoice Ge neration  
+Fiance will generate the invoice in Another Zatca approvaed 
+software and then enter the detaiks of Invoice number and 
+Invoice amount againts the JO.   
+Finance enters:  
+ Invoice number  
+ Invoice date  
+ Amount  
+ Due date  
+ 
+System updates:  
+ JO status → Invoiced  
+ Link invoice  no to JO  
+ Make sure invoice no. is not repeated. And if repeated, notification sent to Admin  
+ Make sure should not be difefrence of more than 15 SAR between the calculated invoice 
+amount and the amount entered by finance dept. If theres any dif ference, notofication 
+sent to admin.  
+ Any closed JO must be invoiced with 24 hours. Any delays must be notification to admin.  
+ 
+8. Post -Invoicing Adjustments (Controlled)  
+If correction is needed:  
+ Original invoice is not edited  
+ Credit note or revised invoice is created (future phase)  
+9. Reporting & Audit  
+Finance can view/export:  
+ Invoices by date/client  
+ Revenue by service type  
+ JO vs Invoice reconciliation  
+ Client Satatement of Account  
+
+=== Page 80 ===
+
+Key Rules (Very Important)  
+ Finance does not influence execution  
+ Billing is bas ed on actual performed work  
+ No manual line -item edits  
+ Every invoice ties back to:  
+o Job Order  
+o Quotation  
+o Execution records  
+Outputs  
+ Billing snapshot  
+ JO status updated  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+=== Page 81 ===
+
+Workflow: Certificate Letterhead & Wallet Card Stock & 
+Numbering Control  
+Purpose  
+Ensure strict control, traceability, and accountability  over controlled stationery, including:  
+ A4 Inspection & Testing Certificate Letterheads  (pre-numbered)  
+ A4 Training Certificate Letterheads  (pre-numbered)  
+ Wallet Cards  (front/back printe d, pre -numbered)  
+So that:  
+ no certificates or cards are issued without system records  
+ misuse, loss, or leakage is detectable  
+ every issued number is traceable to:  
+o person  
+o service  
+o Job Order  
+ ISO/IEC 17020 best practices are satisfied  
+1. Stock Types Covered (Cle ar Separation)  
+1.1 Inspection & Testing Certificate Letterheads (A4)  
+ Pre-printed paper with:  
+o Unique paper number (front side)  
+ Used for:  
+o Inspection certificates  
+o Testing / NDT reports  
+1.2 Training Certificate Letterheads (A4)  
+ Pre-printed paper with:  
+o Unique paper number (front side)  
+ Used for:  
+o Training certificates  
+o Operator certificates (only when client requires A4 certificate)  
+ 
+⚠️ This is a separate stock category  from inspection/testing certificates.  
+
+=== Page 82 ===
+
+1.3 Wallet Cards  
+ Pre-printed plastic cards  
+ Front:  
+o Card design / branding  
+ Back:  
+o Unique wallet card number  
+ Used for:  
+o Training cards  
+o Operator cards (default output)  
+2. Stock Registration (Stock Entry)  
+Action: Register New Stock  
+Performed by Admin / Coordinator / Quality  (role -configurable).  
+2.1 Inspection & Testing Certificate Letterheads  
+User enters:  
+ Stock category: Inspection/Test Certificate Letterhead  
+ Series start number  
+ Series end number  
+ Supplier / printing batch reference  
+ Date received  
+2.2 Training Certificate Letterheads  
+User enters:  
+ Stock category: Training Certificate Letterhead  
+ Series start number  
+ Series end number  
+ Supplier / printing batch reference  
+ Date received  
+2.3 Wallet Cards  
+User enters:  
+ Stock category: Wallet Card  
+ Series start number  
+ Series end number  
+
+=== Page 83 ===
+
+ Card type:  
+o Training  
+o Operator  
+o Generic (if applicable)  
+ Supplier / printing batch reference  
+ Date received  
+System Behavior  
+For each number in the series:  
+ Creates individual stock records  
+ Initial status = In Stock  
+⚠️ No number can be used unless registered in the system.  
+3. Stock Bundling (Optional but Recommended)  
+To simplify handling:  
+ Stock can be grouped into bundles , e.g.:  
+o Inspection certificate papers: 100 –199 
+o Training certificate papers: 300 –399 
+o Wallet cards: 5001 –5100  
+Each bundle contains:  
+ Bundle ID  
+ Stock category  
+ Number range  
+ Status  
+4. Issuin g Stock to Users (Critical Control)  
+Who Can Receive Stock  
+ Inspectors  
+ Trainers  
+ Document Controllers  
+Issuance Process  
+Coordinator assigns:  
+
+=== Page 84 ===
+
+ Stock category  
+ Bundle or number range  
+ Recipient (user)  
+System records:  
+ Issued to (user)  
+ Issue date  
+ Issued by  
+ Number range  
+Stock status changes:  
+ In Stock → Issued  
+Accountability & Dashboard Visibility (Improvement Added)  
+Once stock is issued:  
+ The recipient’s dashboard is updated immediately  
+ User sees a dedicated “My Stock”  section containing three separate tables : 
+1. Inspec tion/Test Certificate Letterheads  
+2. Training Certificate Letterheads  
+3. Wallet Cards  
+Each table shows:  
+ Numbers issued  
+ Numbers used  
+ Numbers remaining  
+ Numbers marked lost/damaged  
+The recipient is fully accountable  for issued stock.  
+5. Stock Usage During Certificate / Card Issuance  
+Usage Point  
+ 
+Occurs during:  
+ Inspection certificate issuance  
+ Training completion  
+
+=== Page 85 ===
+
+ Operator certification completion  
+User Action  
+User enters:  
+ Certificate paper number (front side), OR  
+ Wallet card number (back side)  
+System Validatio n (Hard Rules)  
+System validates:  
+ Number exists  
+ Number is issued to that user  
+ Number has not been used  
+ Correct stock category for that service  
+If valid:  
+ Status → Used  
+ Number linked to:  
+o Candidate / equipment  
+o Certificate or wallet card  
+o Job Order  
+o Service type  
+If invalid:  
+ System blocks completion  
+6. Automatic Number -to-Record Mapping  
+System maintains immutable mapping tables : 
+Inspection / Training Certificate Mapping  
+| Paper No | Certificate Type | JO | Candidate / Equipment | Issued By | Date |  
+ 
+
+=== Page 86 ===
+
+Wallet Card Map ping  
+| Card No | Card Type | JO | Candidate | Issued By | Date |  
+These tables are:  
+ Read -only  
+ Audit -safe 
+ Non -editable  
+7. Unused, Missing & Risk Detection  
+Automatic Monitoring  
+System flags:  
+ Issued numbers never used  
+ Long gaps in numbering  
+ Numbers issued long  ago but unused  
+ High wastage or loss by a user  
+Risk Indicators  
+ Frequent unused stock  
+ Repeated lost/damaged reports  
+ Mismatch between:  
+o attendance  
+o finalized candidates  
+o issued certificates/cards  
+8. Lost / Damaged Stock Handling  
+User Action  
+If paper/card is:  
+ Lost 
+ Damaged  
+ Misprinted  
+User must:  
+ Mark number as Lost / Damaged  
+ Provide mandatory reason  
+
+=== Page 87 ===
+
+ 
+System:  
+ Changes status → Invalid  
+ Prevents reuse  
+ Logs permanently  
+9. Stock Request & Replenishment  
+User View  
+Users can view:  
+ Issued stock  
+ Used numbers  
+ Remaining balance  (per category)  
+Users may:  
+ Request additional stock via system  
+System Alerts  
+System monitors:  
+ Low stock thresholds (per category)  
+Alerts:  
+ Notify coordinator  
+ Prompt reorder from printing facility  
+10. Audit & Management Reports  
+Reports include:  
+ Stock issued vs used per user  
+ Unused numbers by age  
+ Lost/damaged numbers  
+ Certificates/cards issued per JO  
+ Full traceability:  
+o Stock → User → Certificate/Card → JO → Client  
+
+=== Page 88 ===
+
+Key Control Principles  
+ Certificate letterheads & wallet cards are controlled assets  
+ One number = o ne issued document/card  
+ No manual override  
+ No deletion  
+ Full lifecycle tracking  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+=== Page 89 ===
+
+HR Module / Workflow  
+(Human Resources, Competence & Staff Records – Final Version)  
+Purpose  
+Provide a central, controlled HR system  to manage:  
+ staff identity & employment records  
+ competence, authorization & training  
+ legal & access -related documentation  
+ controlled sharing of staff profiles with clients  
+This module supports ISO/IEC 17020 competence requirements  and real operational needs  
+such as si te access approvals.  
+1. Staff Master Registry (Core)  
+Staff Master Table (Dashboard View)  
+Visible to authorized users (Management, HR, Quality).  
+Each staff record includes:  
+ Employee ID (system -generated)  
+ Full name  
+ Designation / role  
+ Department  
+ Date of joini ng 
+ Total industry experience (years)  
+ Key qualification  
+ Employment status:  
+o Active / On Leave / Suspended / Resigned  
+ Authorization status:  
+o Authorized / Restricted / Not Authorized  
+ Last competence review date  
+Table is:  
+ Searchable  
+ Filterable  
+ Exportable (audit use)  
+ Configurable  
+
+=== Page 90 ===
+
+2. Roles & Designations (Configurable)  
+Examples:  
+ CEO / GM  
+ Technical Manager  
+ Admin  
+ Coordinator  
+ Document Controller  
+ Senior Inspection Engineer  
+ Inspection Team Lead  
+ Inspection Engineer / Technician  
+ Training Manager  
+ Trainer  
+ NDT Manager / Tech nician  
+ Other approved designations  
+A staff member may hold multiple roles  (e.g., Inspector + Trainer).  
+3. Personal & Employment Information  
+Personal Details  
+ Full legal name  
+ Date of birth  
+ Nationality  
+ Home country address & contact  
+ Saudi personal contact number  
+ Official contact number  
+ Personal email  
+ Official company email  
+Employment Details  
+ Date of joining  
+ Employment type (Permanent / Contract / Consultant)  
+ Department  
+ Reporting manager  
+ Work region / location  
+
+=== Page 91 ===
+
+4. Legal, Identity & Access Documents (Expanded)  
+4.1 Core Legal Documents  
+Stored securely with expiry tracking:  
+ Passport  
+ Visa 
+ Iqama / National ID  
+ Work permit (if applicable)  
+4.2 Driving & Vehicle Documents (Access Pass Support)  
+Used for site access approvals . 
+Documents include:  
+ Driving License  
+ Vehicle R egistration (Istimara)  
+ Vehicle Insurance  
+Each document has:  
+ Issue date  
+ Expiry date  
+ Uploaded file  
+ Auto -expiry alerts  
+4.3 Mukim Document (Saudi Compliance)  
+ Mukim paper (generated from Saudi government system)  
+ Validity: typically 1 month  
+ Stored as:  
+o Mukim – YYYY -MM  
+ System supports:  
+o Frequent updates  
+o Expiry reminders  
+o Historical retention  
+5. CV, Qualifications & Professional Records  
+Stored per staff:  
+ Curriculum Vitae (CV)  
+
+=== Page 92 ===
+
+ Academic certificates  
+ Professional certifications  
+ Trade licenses  
+ Third -party approvals  
+Each  record includes:  
+ Issuing authority  
+ Issue date  
+ Expiry date (if applicable)  
+ Status: Valid / Expired  
+6. Job Offer, Contract & JD Records  
+ Job offer letter  
+ Offer acceptance  
+ Employment contract  
+ Contract amendments  
+ Signed Job Description (JD)  
+All documents:  
+ Version -controlled  
+ Non -deletable  
+ Superseded records retained  
+7. Competence & Authorization Management  
+Competence Areas  
+Tracked per staff:  
+ Inspection categories  
+ Equipment types  
+ Training delivery  
+ Operator assessment  
+ NDT methods  
+Authorization Records  
+For each  competence:  
+ Authorized role  
+ Scope  
+
+=== Page 93 ===
+
+ Start date  
+ Expiry / review date  
+ Approved by (e.g., Technical Manager)  
+System enforcement:  
+ Only authorized staff can be assigned in Job Orders  
+ Expired authorization blocks assignment automatically  
+8. Training Records  
+Includes:  
+ Training title  
+ Internal / External  
+ Provider  
+ Dates  
+ Certificate upload  
+ Validity (if applicable)  
+Feeds into:  
+ Training Matrix  
+ Authorization review  
+9. Training Matrix  
+Maps:  
+ Staff × required competence × training status  
+Used by:  
+ Quality  
+ Technical Manager  
+ Auditors  
+10. Training Plan & Calendar  
+ Annual / periodic training plan  
+ Refresher intervals  
+ Target staff  
+ Planned vs completed tracking  
+
+=== Page 94 ===
+
+ Central training calendar  
+11. Staff Monitoring & Performance Records  
+Includes:  
+ Field witnessing  
+ Supervision records  
+ Technical reviews  
+ Performance evaluations  
+Each record stores:  
+ Date  
+ Observer  
+ Findings  
+ Actions required  
+12. Shareable Staff Profile Links (New – Very Important)  
+Purpose  
+Allow controlled sharing of staff competence evidence  with clients without exporting PDF s. 
+Shareable Profile Contents  
+Coordinator / Quality can select one or more staff and generate a secure shareable link  
+containing:  
+ Staff name & designation  
+ CV 
+ Academic qualifications  
+ Professional certifications  
+ Training records  
+❌ Does NOT include:  
+ Passport  
+ Visa 
+ Iqama  
+ Personal contact details  
+ Salary or HR -only documents  
+
+=== Page 95 ===
+
+Link Controls  
+ Time -limited expiry  
+ Optional password protection  
+ View -only  
+ Access logged (who viewed, when)  
+Used for:  
+ Client approval  
+ Pre-qualification  
+ Audit submissions  
+13. Staff Status & Lifec ycle Management  
+Supports:  
+ Promotion  
+ Role change  
+ Suspension  
+ Resignation  
+All changes:  
+ Logged  
+ Date -effective  
+ Historical data preserved  
+14. Access Control & Confidentiality  
+ Role -based access  
+ HR-only documents restricted  
+ Legal & Mukim docs limited to HR/Admin  
+ Shareable links expose only approved data  
+All access is:  
+ Logged  
+ Auditable  
+15. Audit & Reporting  
+ 
+
+=== Page 96 ===
+
+Supports reports for:  
+ Staff competence lists  
+ Authorization scope  
+ Expired documents  
+ Mukim validity  
+ Training compliance  
+ ISO/IEC 17020 audits  
+Key Design Principles  
+ One staff = one master record  
+ No deletion (only superseding)  
+ Full versioning  
+ Authorization controls system behavior  
+ Share externally without exporting files  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+=== Page 97 ===
+
+Workflow: Inspection Tools, Instruments & Assets Registry  
+(Tools Usage Log + Calibration Control + Asset Accountability)  
+Purpose  
+Establish a controlled, traceable system  for managing:  
+• inspection tools & measuring instruments  
+• testing instruments  
+• shared and non -shared tools  
+• company assets (vehicles, IT, kit s, equipment)  
+• calibration compliance  
+• usage logging (ISO/IEC 17020 requirement)  
+So that:  
+• every inspection/test records which tools were used  
+• every tool has a responsible owner/user  
+• expired or uncalibrated tools cannot be used  
+• shared tools are pr operly issued and returned  
+• assets are always traceable to a person/location  
+This module supports:  
+• Inspection workflow  
+• Testing workflow  
+• HR module (staff accountability)  
+• Audit & accreditation requirements  
+Module Structure (High -Level)  
+
+=== Page 98 ===
+
+This module has two tightly related parts : 
+1. Inspection Tools & Instruments Registry  
+2. Company Assets Registry  
+Both share:  
+• issuance logic  
+• responsibility tracking  
+• audit logs  
+PART 1: Inspection Tools & Instruments Registry  
+1. Ownership & Roles  
+Registry Owner  
+• Quality Department (preferred) or Admin (configurable)  or Coordinator  
+Roles & Permissions  
+• Admin / Quality:  
+ create tools  
+ edit tool records  
+ upload calibration certificates  
+ assign/unassign tools  
+• Coordinators:  
+ issue shared tools  
+ view usage logs  
+• Inspectors:  
+ view tools issued to them  
+ select tools during execution  
+ cannot edit tool master data  
+2. Tool / Instrument Master Record  
+Each tool or instrument is registered once . 
+
+=== Page 99 ===
+
+Mandatory Fields  
+• Tool name  
+(e.g., Vernier Caliper, Measuring Tape, Torque Wren ch) 
+• Tool category  
+(Measuring / Electrical / Mechanical / NDT / Other)  
+• Tool type  
+(Hand tool / Measuring instrument / Electronic instrument)  
+• Manufacturer  
+• Model  
+• Serial number / Asset number  
+• Calibration required? (Yes / No)  
+Calibration Fields (If Applicable)  
+• Calibration certificate upload (PDF/image)  
+• Last calibration date  
+• Next calibration due date  
+• Calibration agency  
+• Calibration status (Valid / Expired / Suspended)  
+Rule  
+Any tool with:  
+• calibration required = Yes AND  
+• calibration expired  
+→ is automatically blocked from field use  
+3. Tool Assignment Types  
+The system supports two assignment models , exactly as you described.  
+
+=== Page 100 ===
+
+3.1 Permanently Assigned Tools (Default for Inspectors)  
+Use case  
+• Frequently used tools  
+• Each inspector has a dedicated set  
+Workflow  
+• Admin/Coordinator assigns tools permanently to an inspector  
+• Tool status = Issued (Permanent)  
+• Inspector dashboard shows:  
+ “My Tools”  
+ only valid (calibrated) tools  
+Field Impact  
+• When inspector opens a Job Order:  
+ his pre -assigned tools appear automatically  
+ he simply clicks/selects tools used  
+• No searching, no manual entry  
+3.2 Shared / Temporarily Issued Tools  
+Use case  
+• Limited -quantity tools  
+• Specialized equipment  
+• High -value instruments  
+Workflow  
+• Tool remains with Coordinator  / Store  
+• When required:  
+ Coordinator issues tool to inspector  
+
+=== Page 101 ===
+
+ Issue duration may be defined (optional)  
+• Tool status = Issued (Temporary)  
+Inspector View  
+• Tool appears in inspector’s available tools list  
+• Only for the issuance period  
+Return  
+• Coordinator  marks tool as Returned  
+• Tool status reverts to In Store / Available  
+4. Tool Availability Rules (Critical Control)  
+A tool appears in an inspector’s Job Order only if : 
+• issued to that inspector (permanent or temporary)  
+• calibration status = Valid  
+• tool status ≠ Lost / Damaged / Suspended  
+If any condition fails:  
+• tool is hidden from Job Order execution UI  
+5. Tool Selection During Inspection / Testing  
+During Job Order execution:  
+• Inspector opens service line item  
+• “Tools Used” section is shown  
+• Inspect or selects tool(s) used from his available list  
+ 
+System records:  
+
+=== Page 102 ===
+
+• tool ID  
+• tool name  
+• inspector  
+• JO number  
+• service type  
+• date & time  
+This data automatically becomes part of:  
+• inspection record  
+• FIR  
+• audit trail  
+6. Automatic Tool Usage Log (ISO/IEC 17020 Core Requirement)  
+The system automatically generates a Tool Usage Log . 
+Each log entry contains:  
+• Tool ID / serial number  
+• Tool name  
+• Inspector name  
+• Job Order number  
+• Service performed  
+• Date & time used  
+No manual log entry is allowed.  
+Usage is recorded only  via actual execution.  
+7. Calibration Control & Alerts  
+
+=== Page 103 ===
+
+System Monitoring  
+• Tracks calibration expiry continuously  
+Before Expiry  
+• Alerts Quality / Admin  
+• Optional alert to inspector  
+After Expiry  
+• Tool is:  
+ automatically blocked  
+ remov ed from inspector’s usable list  
+• Cannot be selected in any Job Order  
+Audit Benefit  
+• Proves no expired instrument was used in inspection/testing  
+8. Tool Loss / Damage Handling  
+If a tool is:  
+• lost  
+• damaged  
+• sent for repair  
+User must:  
+• mark tool as Lost  / Damaged / Under Repair  
+• enter reason (mandatory)  
+System:  
+• blocks tool from use  
+• logs event permanently  
+
+=== Page 104 ===
+
+PART 2: Company Assets Registry  
+9. Asset Scope  
+This registry covers all non -consumable company assets , including:  
+• vehicles  
+• laptops / desktops  
+• printers / screens  
+• rescue kits  
+• demonstration kits  
+• measuring guns  
+• furniture  
+• any other capital or controlled asset  
+10. Asset Master Record  
+Each asset includes:  
+• Asset name  
+• Asset category  
+(Vehicle / IT / Equipment / Furniture / Safety / Other)  
+• Asset tag / number  
+• Manufacturer / make / model  
+• Serial number (if applicable)  
+• Purchase date  
+• Asset condition  
+• Location  
+
+=== Page 105 ===
+
+• Responsible person  
+11. Asset Assignment & Responsibility  
+Assets can be:  
+• Assigned to a person  
+• Assigned to a department  
+• Ass igned to a location  
+System records:  
+• issued to  
+• issue date  
+• current location  
+• accountability owner  
+This supports:  
+• HR responsibility  
+• insurance  
+• internal controls  
+12. Asset Movement & History  
+Whenever an asset is:  
+• reassigned  
+• relocated  
+• returned  
+ 
+System logs:  
+
+=== Page 106 ===
+
+• previous holder/location  
+• new holder/location  
+• date & reason  
+No deletion allowed.  
+13. Asset Visibility in Inspector Context  
+• Assets do not appear  in inspection tool selection  
+• Assets are managed for accountability, not inspection execu tion 
+• Vehicles may optionally link to Job Orders for travel records (future extension)  
+14. Dashboards  
+Inspector Dashboard  
+• My Tools (usable)  
+• Calibration status  
+• Recently used tools  
+Coordinator / Quality Dashboard  
+• Tools by inspector  
+• Calibration due  / expired  
+• Tool usage frequency  
+• Shared tool availability  
+Asset Dashboard  
+• Assets by location  
+• Assets by responsible person  
+• Lost / damaged assets  
+
+=== Page 107 ===
+
+15. Audit & Compliance Outputs  
+System can generate:  
+• Tool usage logs per inspector  
+• Tool usage logs per Job Order  
+• Calibration compliance reports  
+• Asset responsibility reports  
+• Lost/damaged tool history  
+Key Control Principles (Non -Negotiable)  
+• Tools are controlled instruments  
+• Usage is recorded only via execution  
+• Expired tools cannot be used  
+• Ins pectors cannot fake tool usage  
+• Every tool has a responsible owner  
+• Fully aligned with ISO/IEC 17020  
+ 
+ 
