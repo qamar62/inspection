@@ -31,6 +31,7 @@ def _split_env_list(name: str) -> list[str]:
 
 
 CSRF_TRUSTED_ORIGINS = _split_env_list('CSRF_TRUSTED_ORIGINS')
+FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:3000').rstrip('/')
 
 
 # Application definition

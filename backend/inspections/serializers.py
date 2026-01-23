@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from django.conf import settings
 from .models import (
     Client, Equipment, JobOrder, JobLineItem, Inspection,
     InspectionAnswer, PhotoRef, Certificate, Sticker,
@@ -189,9 +190,11 @@ class CertificateSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'share_link_token', 'created_at', 'updated_at']
     
     def get_public_url(self, obj):
-        request = self.context.get('request')
-        if request and obj.status == 'PUBLISHED':
-            return request.build_absolute_uri(f'/api/certificates/public/?token={obj.share_link_token}')
+        if obj.status != 'PUBLISHED':
+            return None
+        base_url = getattr(settings, 'FRONTEND_URL', '').rstrip('/')
+        if base_url:
+            return f"{base_url}/certificates/public/{obj.share_link_token}"
         return None
 
 
