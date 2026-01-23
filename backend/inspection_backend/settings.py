@@ -20,7 +20,17 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-dev-key-change-in-producti
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1,backend').split(',')
+ALLOWED_HOSTS = [host.strip() for host in os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1,backend').split(',') if host.strip()]
+
+
+def _split_env_list(name: str) -> list[str]:
+    value = os.getenv(name, '').strip()
+    if not value:
+        return []
+    return [item.strip() for item in value.split(',') if item.strip()]
+
+
+CSRF_TRUSTED_ORIGINS = _split_env_list('CSRF_TRUSTED_ORIGINS')
 
 
 # Application definition
@@ -236,10 +246,10 @@ SIMPLE_JWT = {
 }
 
 # CORS settings
-CORS_ALLOWED_ORIGINS = os.getenv(
-    'CORS_ALLOWED_ORIGINS',
-    'http://localhost:3000,http://127.0.0.1:3000'
-).split(',')
+CORS_ALLOWED_ORIGINS = _split_env_list('CORS_ALLOWED_ORIGINS') or [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+]
 
 CORS_ALLOW_CREDENTIALS = True
 
