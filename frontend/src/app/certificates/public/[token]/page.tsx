@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { headers } from 'next/headers'
 import { notFound } from 'next/navigation'
 import {
   CalendarDays,
@@ -15,6 +16,7 @@ import {
 
 import { formatDate, formatDateTime } from '@/lib/utils'
 import type { Certificate, Equipment, Inspection } from '@/types'
+import { QRCodeSVG } from 'qrcode.react'
 
 const API_BASE_URL = (process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api').replace(
   /\/+$/,
@@ -117,6 +119,10 @@ export default async function CertificatePublicPage({ params }: { params: { toke
   const issuedOn = certificate.issued_date ? formatDate(certificate.issued_date) : 'Pending issuance'
   const inspectionStart = inspection?.start_time ? formatDateTime(inspection.start_time) : null
   const inspectionEnd = inspection?.end_time ? formatDateTime(inspection.end_time) : null
+  const headersList = headers()
+  const protocol = headersList.get('x-forwarded-proto') ?? 'https'
+  const host = headersList.get('x-forwarded-host') ?? headersList.get('host')
+  const shareUrl = host ? `${protocol}://${host}/certificates/public/${params.token}` : `${params.token}`
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-100 via-white to-sky-100 text-slate-900">
@@ -175,15 +181,27 @@ export default async function CertificatePublicPage({ params }: { params: { toke
                 </p>
               </div>
             </div>
-            <div className="space-y-3 rounded-2xl border border-sky-200/70 bg-sky-50/70 p-5 text-sm text-slate-700">
+            <div className="flex flex-col items-center gap-4 rounded-2xl border border-sky-200/70 bg-sky-50/80 p-5 text-sm text-slate-700">
               <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.35em] text-sky-700">
-                <Share2 className="h-4 w-4" /> Verification token
+                <Share2 className="h-4 w-4" /> Verification QR
               </p>
-              <p className="text-lg font-semibold tracking-[0.25em] text-slate-900">{formatShareToken(certificate.share_link_token)}</p>
-              <p className="text-xs text-slate-500">
-                Scan the QR code on the certificate or share this page to validate authenticity. Tokens may be revoked if the
-                certificate is superseded.
-              </p>
+              <div className="flex items-center justify-center rounded-2xl bg-white p-4 shadow-inner shadow-sky-200">
+                <QRCodeSVG value={shareUrl} size={132} level="Q" includeMargin className="drop-shadow-sm" />
+              </div>
+              <div className="text-center text-xs text-slate-500">
+                Scan with any mobile device to open this certificate. The code encodes a secure, signed verification link.
+              </div>
+              <div className="w-full rounded-xl border border-sky-200/60 bg-white/80 px-3 py-2 text-center text-xs font-semibold tracking-[0.25em] text-slate-600">
+                {formatShareToken(certificate.share_link_token)}
+              </div>
+              <a
+                href={shareUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full border border-sky-300/70 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-sky-700 transition hover:border-sky-400/80"
+              >
+                <Share2 className="h-4 w-4" /> Open verification link
+              </a>
             </div>
           </div>
 
