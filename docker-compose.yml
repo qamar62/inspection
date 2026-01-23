@@ -120,8 +120,8 @@ services:
     expose:
       - "3000"
     environment:
-      - NEXT_PUBLIC_API_URL=http://demo.qaam.work/api
-      - NEXTAUTH_URL=http://demo.qaam.work
+      - NEXT_PUBLIC_API_URL=https://demo.qaam.work/api
+      - NEXTAUTH_URL=https://demo.qaam.work
       - NEXTAUTH_SECRET=your-nextauth-secret-change-in-production-please-change-this-to-a-random-string
       - API_URL=http://backend:8000/api
     depends_on:
