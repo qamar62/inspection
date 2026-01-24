@@ -227,6 +227,180 @@ export interface ApiError {
   [key: string]: any
 }
 
+// HR People Registry types
+export type PersonType = 'OPERATOR' | 'TRAINEE' | 'CLIENT_STAFF' | 'INTERNAL'
+
+export interface PersonCredential {
+  id: number
+  person: number
+  credential_name: string
+  issuing_body?: string
+  reference_code?: string
+  issued_on?: string
+  valid_until?: string
+  status: 'ACTIVE' | 'EXPIRED' | 'SUSPENDED' | 'REVOKED'
+  document?: string
+  notes?: string
+  created_at: string
+  updated_at: string
+}
+
+export interface Person {
+  id: number
+  first_name: string
+  last_name: string
+  email?: string
+  phone?: string
+  person_type: PersonType
+  employer?: string
+  client?: number
+  client_name?: string
+  notes?: string
+  credentials?: PersonCredential[]
+  created_at: string
+  updated_at: string
+  created_by?: number
+  updated_by?: number
+}
+
+// Competence Matrix types
+export type CompetenceLevel = 'SUPERVISED' | 'AUTHORIZED' | 'LEAD'
+
+export type CompetenceStatus = 'ACTIVE' | 'EXPIRED' | 'REVOKED'
+
+export type CompetenceEvidenceType = 'TRAINING' | 'CERTIFICATE' | 'ASSESSMENT' | 'OTHER'
+
+export interface CompetenceEvidence {
+  id: number
+  authorization: number
+  evidence_type: CompetenceEvidenceType
+  issued_by?: string
+  issued_on?: string
+  reference_code?: string
+  document?: string
+  notes?: string
+  created_at: string
+  updated_at: string
+}
+
+export interface CompetenceAuthorization {
+  id: number
+  user: number
+  user_name?: string
+  service: number
+  service_code?: string
+  discipline?: string
+  level: CompetenceLevel
+  scope_notes?: string
+  valid_from?: string
+  valid_until?: string
+  last_assessed?: string
+  status: CompetenceStatus
+  evidence_items?: CompetenceEvidence[]
+  created_at: string
+  updated_at: string
+  created_by?: number
+  updated_by?: number
+}
+
+// Tool governance types
+export type ToolAssignmentType = 'USER' | 'JOB_ORDER' | 'EQUIPMENT' | 'CLIENT'
+
+export type ToolStatus = 'AVAILABLE' | 'ASSIGNED' | 'MAINTENANCE' | 'CALIBRATION' | 'LOST' | 'RETIRED'
+
+export interface ToolCategory {
+  id: number
+  code: string
+  name: string
+  description?: string
+  requires_calibration: boolean
+  calibration_interval_days?: number
+  default_assignment_type: ToolAssignmentType
+  notes?: string
+  created_at: string
+  updated_at: string
+}
+
+export interface Tool {
+  id: number
+  name: string
+  serial_number: string
+  category?: number
+  category_info?: ToolCategory
+  status: ToolStatus
+  assignment_mode: 'INDIVIDUAL' | 'TEAM' | 'JOB_ORDER' | 'POOL'
+  location?: string
+  calibration_due?: string
+  assigned_to?: number
+  assigned_to_name?: string
+  is_overdue_for_calibration?: boolean
+  created_at: string
+  updated_at: string
+}
+
+export type ToolAssignmentStatus = 'ACTIVE' | 'RETURNED' | 'LOST' | 'DAMAGED'
+
+export interface ToolAssignment {
+  id: number
+  tool: number
+  tool_info?: Tool
+  assignment_type: ToolAssignmentType
+  status: ToolAssignmentStatus
+  assigned_user?: number
+  assigned_user_name?: string
+  job_order?: number
+  job_order_reference?: string
+  equipment?: number
+  equipment_tag?: string
+  client?: number
+  client_name?: string
+  assigned_on: string
+  expected_return?: string
+  returned_on?: string
+  notes?: string
+  created_at: string
+  updated_at: string
+  created_by?: number
+  updated_by?: number
+}
+
+export type ToolUsageEvent = 'CHECKOUT' | 'CHECKIN' | 'CALIBRATION' | 'MAINTENANCE' | 'REPAIR' | 'ALERT'
+
+export interface ToolUsageLog {
+  id: number
+  tool: number
+  tool_info?: Tool
+  assignment?: number
+  assignment_info?: ToolAssignment
+  event_type: ToolUsageEvent
+  occurred_at: string
+  performed_by?: number
+  performed_by_name?: string
+  notes?: string
+  created_at: string
+  updated_at: string
+}
+
+export type ToolIncidentType = 'LOSS' | 'DAMAGE' | 'CALIBRATION_FAILURE' | 'OTHER'
+
+export type ToolIncidentSeverity = 'LOW' | 'MEDIUM' | 'HIGH'
+
+export interface ToolIncident {
+  id: number
+  tool: number
+  tool_info?: Tool
+  incident_type: ToolIncidentType
+  severity: ToolIncidentSeverity
+  occurred_on: string
+  description?: string
+  resolved_on?: string
+  resolution_notes?: string
+  created_at: string
+  updated_at: string
+  created_by?: number
+  updated_by?: number
+}
+
 // Service Master Registry types
 export type ServiceCategory =
   | 'INSPECTION'

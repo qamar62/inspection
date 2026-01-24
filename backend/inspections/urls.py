@@ -6,7 +6,8 @@ from .views import (
     JobLineItemViewSet, InspectionViewSet, InspectionAnswerViewSet,
     PhotoRefViewSet, CertificateViewSet, FieldInspectionReportViewSet, StickerViewSet, ApprovalViewSet,
     PublicationViewSet, ToolViewSet, CalibrationViewSet, CompetenceAuthorizationViewSet,
-    CompetenceEvidenceViewSet, PersonViewSet, PersonCredentialViewSet
+    CompetenceEvidenceViewSet, PersonViewSet, PersonCredentialViewSet, ToolCategoryViewSet,
+    ToolAssignmentViewSet, ToolUsageLogViewSet, ToolIncidentViewSet
 )
 
 router = DefaultRouter()
@@ -25,8 +26,12 @@ router.register(r'field-reports', FieldInspectionReportViewSet, basename='fieldi
 router.register(r'stickers', StickerViewSet, basename='sticker')
 router.register(r'approvals', ApprovalViewSet, basename='approval')
 router.register(r'publications', PublicationViewSet, basename='publication')
+router.register(r'tool-categories', ToolCategoryViewSet, basename='toolcategory')
 router.register(r'tools', ToolViewSet, basename='tool')
 router.register(r'calibrations', CalibrationViewSet, basename='calibration')
+router.register(r'tool-assignments', ToolAssignmentViewSet, basename='toolassignment')
+router.register(r'tool-usage', ToolUsageLogViewSet, basename='toolusagelog')
+router.register(r'tool-incidents', ToolIncidentViewSet, basename='toolincident')
 router.register(r'competence-authorizations', CompetenceAuthorizationViewSet, basename='competenceauthorization')
 router.register(r'competence-evidence', CompetenceEvidenceViewSet, basename='competenceevidence')
 router.register(r'people', PersonViewSet, basename='person')

@@ -31,39 +31,57 @@ interface NavItem {
 const navigation: NavItem[] = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Job Orders', href: '/dashboard/job-orders', icon: ClipboardList },
-  { 
+  {
     name: 'Services',
     href: '/dashboard/services',
     icon: LibraryBig,
-    roles: ['ADMIN', 'TEAM_LEAD', 'TECHNICAL_MANAGER']
+    roles: ['ADMIN', 'TEAM_LEAD', 'TECHNICAL_MANAGER'],
   },
   { name: 'Inspections', href: '/dashboard/inspections', icon: FileText },
   { name: 'Equipment', href: '/dashboard/equipment', icon: Package },
-  { 
-    name: 'Approvals', 
-    href: '/dashboard/approvals', 
+  {
+    name: 'Tools & Governance',
+    href: '/dashboard/tools',
+    icon: Sparkles,
+    roles: ['ADMIN', 'TECHNICAL_MANAGER', 'TEAM_LEAD'],
+  },
+  {
+    name: 'Approvals',
+    href: '/dashboard/approvals',
     icon: CheckSquare,
-    roles: ['ADMIN', 'TECHNICAL_MANAGER', 'TEAM_LEAD']
+    roles: ['ADMIN', 'TECHNICAL_MANAGER', 'TEAM_LEAD'],
   },
   { name: 'Certificates', href: '/dashboard/certificates', icon: FileCheck },
   { name: 'Stickers', href: '/dashboard/stickers', icon: QrCode },
-  { 
-    name: 'Clients', 
-    href: '/dashboard/clients', 
+  {
+    name: 'Clients',
+    href: '/dashboard/clients',
     icon: Users,
-    roles: ['ADMIN', 'TEAM_LEAD']
+    roles: ['ADMIN', 'TEAM_LEAD'],
   },
-  { 
-    name: 'Reports', 
-    href: '/dashboard/reports', 
+  {
+    name: 'Reports',
+    href: '/dashboard/reports',
     icon: BarChart3,
-    roles: ['ADMIN', 'TEAM_LEAD', 'TECHNICAL_MANAGER']
+    roles: ['ADMIN', 'TEAM_LEAD', 'TECHNICAL_MANAGER'],
   },
-  { 
-    name: 'Settings', 
-    href: '/dashboard/settings', 
+  {
+    name: 'HR • People',
+    href: '/dashboard/hr/people',
+    icon: Users,
+    roles: ['ADMIN', 'TECHNICAL_MANAGER'],
+  },
+  {
+    name: 'HR • Competence',
+    href: '/dashboard/hr/competence',
+    icon: Sparkles,
+    roles: ['ADMIN', 'TECHNICAL_MANAGER'],
+  },
+  {
+    name: 'Settings',
+    href: '/dashboard/settings',
     icon: Settings,
-    roles: ['ADMIN']
+    roles: ['ADMIN'],
   },
 ]
 

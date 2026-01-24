@@ -9,7 +9,7 @@ _Last updated: 2026-01-22_
 - **Job order management** including line items, assignments, inspection execution, approvals, FIRs, and publication tracking.
 - **Certificate lifecycle** from inspection approval to PDF generation, QR share tokens, and publication.
 - **Sticker generation and resolution** for equipment linkage and history lookup.
-- **Basic tools and calibration tracking**, recording ownership and calibration certificates.
+- **Tools & instruments governance** covering categories, assignment lifecycle, calibration enforcement, usage logging, and incident tracking.
 - **Audit log model** capable of storing ISO/IEC 17020 trail data (create/update/approve/publish actions).
 - **Service Master Registry backend** with Service & ServiceVersion models, serializers, viewsets, filtering, and admin-permissioned CRUD APIs.
 - **HR competence matrix backend** covering authorizations, evidence tracking, and admin tooling.
@@ -22,7 +22,6 @@ _Last updated: 2026-01-22_
 - **Controlled templates and digital forms** for checklists, training proformas, assessments, and offline-friendly execution.
 - **Offline field app support** (sync queues, conflict handling, pending sync states, evidence requirements enforcement).
 - **Training & operator certification modules** (course catalog, sessions, QR-based attendance/assessment, certificates/wallet cards).
-- **Tools & instruments governance** (categories, assignment types, calibration status enforcement, loss/damage handling, automatic usage logs).
 - **Company assets registry** for non-inspection assets with movement history and responsibility tracking.
 - **Controlled stock management** for letterheads and wallet cards, including issuance, numbering validation, and archival rendering flows.
 - **Document numbering rules** (non-sequential IDs, final archival copy generation, letterhead number capture).

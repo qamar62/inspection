@@ -15,7 +15,8 @@ from .models import (
     InspectionAnswer, PhotoRef, Certificate, Sticker,
     FieldInspectionReport, Approval, Publication, Tool, Calibration, User,
     Service, ServiceVersion, CompetenceAuthorization, CompetenceEvidence,
-    Person, PersonCredential
+    Person, PersonCredential, ToolCategory, ToolAssignment, ToolUsageLog,
+    ToolIncident
 )
 from .serializers import (
     ClientSerializer, EquipmentSerializer, JobOrderSerializer,
@@ -26,7 +27,8 @@ from .serializers import (
     CalibrationSerializer, UserSerializer, AssignInspectorSerializer,
     InspectionSubmitSerializer, ServiceSerializer, ServiceVersionSerializer,
     CompetenceAuthorizationSerializer, CompetenceEvidenceSerializer,
-    PersonSerializer, PersonCredentialSerializer
+    PersonSerializer, PersonCredentialSerializer, ToolCategorySerializer,
+    ToolAssignmentSerializer, ToolUsageLogSerializer, ToolIncidentSerializer
 )
 from .permissions import (
     IsAdmin, IsAdminOrTeamLead, IsInspector, CanApprove,
@@ -738,20 +740,92 @@ class PublicationViewSet(viewsets.ModelViewSet):
 
 class ToolViewSet(viewsets.ModelViewSet):
     """ViewSet for tools"""
-    queryset = Tool.objects.select_related('assigned_to').all()
+    queryset = Tool.objects.select_related('assigned_to', 'category').all()
     serializer_class = ToolSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAdminOrTechnicalManager]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['assigned_to']
-    search_fields = ['name', 'serial_number']
+    filterset_fields = ['assigned_to', 'category', 'status', 'assignment_mode']
+    search_fields = ['name', 'serial_number', 'location']
+    ordering_fields = ['name', 'calibration_due', 'created_at']
     ordering = ['name']
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(updated_by=self.request.user)
 
 
 class CalibrationViewSet(viewsets.ModelViewSet):
     """ViewSet for calibrations"""
     queryset = Calibration.objects.select_related('tool').all()
     serializer_class = CalibrationSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAdminOrTechnicalManager]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ['tool']
     ordering = ['-calibration_date']
+
+
+class ToolCategoryViewSet(viewsets.ModelViewSet):
+    """ViewSet for tool categories"""
+
+    queryset = ToolCategory.objects.all()
+    serializer_class = ToolCategorySerializer
+    permission_classes = [IsAuthenticated, IsAdmin]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['code', 'name']
+    ordering_fields = ['code', 'name']
+    ordering = ['code']
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(updated_by=self.request.user)
+
+
+class ToolAssignmentViewSet(viewsets.ModelViewSet):
+    """ViewSet for tool assignments"""
+
+    queryset = ToolAssignment.objects.select_related(
+        'tool', 'assigned_user', 'job_order', 'equipment', 'client'
+    ).all()
+    serializer_class = ToolAssignmentSerializer
+    permission_classes = [IsAuthenticated, IsAdminOrTechnicalManager]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['tool', 'assignment_type', 'status', 'assigned_user', 'job_order']
+    search_fields = ['tool__name', 'tool__serial_number', 'notes']
+    ordering_fields = ['assigned_on', 'expected_return']
+    ordering = ['-assigned_on']
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(updated_by=self.request.user)
+
+
+class ToolUsageLogViewSet(viewsets.ModelViewSet):
+    """ViewSet for tool usage logs"""
+
+    queryset = ToolUsageLog.objects.select_related('tool', 'assignment', 'performed_by').all()
+    serializer_class = ToolUsageLogSerializer
+    permission_classes = [IsAuthenticated, IsAdminOrTechnicalManager]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['tool', 'event_type']
+    search_fields = ['tool__name', 'tool__serial_number', 'notes']
+    ordering_fields = ['occurred_at']
+    ordering = ['-occurred_at']
+
+
+class ToolIncidentViewSet(viewsets.ModelViewSet):
+    """ViewSet for tool incidents"""
+
+    queryset = ToolIncident.objects.select_related('tool').all()
+    serializer_class = ToolIncidentSerializer
+    permission_classes = [IsAuthenticated, IsAdminOrTechnicalManager]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['tool', 'incident_type', 'severity']
+    search_fields = ['tool__name', 'tool__serial_number', 'description']
+    ordering_fields = ['occurred_on', 'severity']
+    ordering = ['-occurred_on']

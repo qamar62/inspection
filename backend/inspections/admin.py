@@ -8,7 +8,8 @@ from .models import (
     Sticker, FieldInspectionReport, Approval, Publication,
     Tool, Calibration, AuditLog, CompetenceAuthorization,
     CompetenceEvidence, Person, PersonCredential, Service,
-    ServiceVersion
+    ServiceVersion, ToolCategory, ToolAssignment, ToolUsageLog,
+    ToolIncident
 )
 
 # Customize Django Admin Site grouping
@@ -207,12 +208,21 @@ class PublicationAdmin(admin.ModelAdmin):
     readonly_fields = ['created_at', 'updated_at']
 
 
+@admin.register(ToolCategory, site=inspection_admin_site)
+class ToolCategoryAdmin(admin.ModelAdmin):
+    list_display = ['id', 'code', 'name', 'requires_calibration', 'default_assignment_type']
+    list_filter = ['requires_calibration', 'default_assignment_type']
+    search_fields = ['code', 'name']
+    readonly_fields = ['created_at', 'updated_at', 'created_by', 'updated_by']
+
+
 @admin.register(Tool, site=inspection_admin_site)
 class ToolAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'serial_number', 'calibration_due', 'assigned_to']
-    list_filter = ['calibration_due', 'assigned_to']
-    search_fields = ['name', 'serial_number']
-    readonly_fields = ['created_at', 'updated_at']
+    list_display = ['id', 'name', 'serial_number', 'category', 'status', 'assignment_mode', 'calibration_due', 'assigned_to']
+    list_filter = ['status', 'assignment_mode', 'category', 'calibration_due']
+    search_fields = ['name', 'serial_number', 'location']
+    autocomplete_fields = ['category', 'assigned_to']
+    readonly_fields = ['created_at', 'updated_at', 'created_by', 'updated_by']
 
 
 @admin.register(Calibration, site=inspection_admin_site)
@@ -222,6 +232,33 @@ class CalibrationAdmin(admin.ModelAdmin):
     search_fields = ['tool__name', 'tool__serial_number']
     readonly_fields = ['created_at', 'updated_at']
     date_hierarchy = 'calibration_date'
+
+
+@admin.register(ToolAssignment, site=inspection_admin_site)
+class ToolAssignmentAdmin(admin.ModelAdmin):
+    list_display = ['id', 'tool', 'assignment_type', 'status', 'assigned_on', 'expected_return', 'returned_on']
+    list_filter = ['assignment_type', 'status', 'assigned_on']
+    search_fields = ['tool__name', 'tool__serial_number', 'notes']
+    autocomplete_fields = ['tool', 'assigned_user', 'job_order', 'equipment', 'client']
+    readonly_fields = ['created_at', 'updated_at', 'created_by', 'updated_by']
+
+
+@admin.register(ToolUsageLog, site=inspection_admin_site)
+class ToolUsageLogAdmin(admin.ModelAdmin):
+    list_display = ['id', 'tool', 'event_type', 'occurred_at', 'performed_by']
+    list_filter = ['event_type', 'occurred_at']
+    search_fields = ['tool__name', 'tool__serial_number', 'notes']
+    autocomplete_fields = ['tool', 'assignment', 'performed_by']
+    readonly_fields = ['created_at', 'updated_at']
+
+
+@admin.register(ToolIncident, site=inspection_admin_site)
+class ToolIncidentAdmin(admin.ModelAdmin):
+    list_display = ['id', 'tool', 'incident_type', 'severity', 'occurred_on', 'resolved_on']
+    list_filter = ['incident_type', 'severity', 'occurred_on']
+    search_fields = ['tool__name', 'tool__serial_number', 'description']
+    autocomplete_fields = ['tool']
+    readonly_fields = ['created_at', 'updated_at', 'created_by', 'updated_by']
 
 
 @admin.register(AuditLog, site=inspection_admin_site)

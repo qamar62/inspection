@@ -576,10 +576,64 @@ class Publication(AuditedModel):
         return f"Publication {self.id} - {self.job_order}"
 
 
+class ToolCategory(AuditedModel):
+    """Categorisation for tools and instruments."""
+
+    code = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=150)
+    description = models.TextField(blank=True)
+    requires_calibration = models.BooleanField(default=False)
+    calibration_interval_days = models.PositiveIntegerField(null=True, blank=True)
+    default_assignment_type = models.CharField(
+        max_length=20,
+        choices=[
+            ('INDIVIDUAL', 'Individual'),
+            ('TEAM', 'Team'),
+            ('JOB_ORDER', 'Job Order'),
+            ('POOL', 'Shared Pool'),
+        ],
+        default='INDIVIDUAL'
+    )
+    notes = models.TextField(blank=True)
+
+    class Meta:
+        db_table = 'tool_categories'
+        ordering = ['name']
+        verbose_name_plural = 'Tool Categories'
+
+    def __str__(self):
+        return f"{self.code} - {self.name}"
+
+
 class Tool(AuditedModel):
-    """Tools and equipment used by inspectors"""
+    """Tools and instruments used by inspectors"""
+
+    class Status(models.TextChoices):
+        AVAILABLE = 'AVAILABLE', 'Available'
+        ASSIGNED = 'ASSIGNED', 'Assigned'
+        MAINTENANCE = 'MAINTENANCE', 'Maintenance'
+        CALIBRATION = 'CALIBRATION', 'Under Calibration'
+        LOST = 'LOST', 'Lost'
+        RETIRED = 'RETIRED', 'Retired'
+
+    class AssignmentMode(models.TextChoices):
+        INDIVIDUAL = 'INDIVIDUAL', 'Individual'
+        TEAM = 'TEAM', 'Team'
+        JOB_ORDER = 'JOB_ORDER', 'Job Order'
+        POOL = 'POOL', 'Shared Pool'
+
     name = models.CharField(max_length=255)
     serial_number = models.CharField(max_length=255, unique=True)
+    category = models.ForeignKey(
+        ToolCategory,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='tools'
+    )
+    status = models.CharField(max_length=15, choices=Status.choices, default=Status.AVAILABLE)
+    assignment_mode = models.CharField(max_length=20, choices=AssignmentMode.choices, default=AssignmentMode.INDIVIDUAL)
+    location = models.CharField(max_length=255, blank=True)
     calibration_due = models.DateField(null=True, blank=True)
     assigned_to = models.ForeignKey(
         User,
@@ -588,13 +642,121 @@ class Tool(AuditedModel):
         blank=True,
         related_name='tools'
     )
-    
+
     class Meta:
         db_table = 'tools'
         ordering = ['name']
-    
+        indexes = [
+            models.Index(fields=['status']),
+            models.Index(fields=['category', 'status']),
+        ]
+
     def __str__(self):
         return f"{self.name} - {self.serial_number}"
+
+    @property
+    def is_overdue_for_calibration(self):
+        if not self.calibration_due:
+            return False
+        return self.calibration_due < timezone.now().date()
+
+
+class ToolAssignment(AuditedModel):
+    """Assignment lifecycle for tools."""
+
+    class AssignmentType(models.TextChoices):
+        USER = 'USER', 'User'
+        JOB_ORDER = 'JOB_ORDER', 'Job Order'
+        EQUIPMENT = 'EQUIPMENT', 'Equipment'
+        CLIENT = 'CLIENT', 'Client Contact'
+
+    class Status(models.TextChoices):
+        ACTIVE = 'ACTIVE', 'Active'
+        RETURNED = 'RETURNED', 'Returned'
+        LOST = 'LOST', 'Lost'
+        DAMAGED = 'DAMAGED', 'Damaged'
+
+    tool = models.ForeignKey(Tool, on_delete=models.CASCADE, related_name='assignments')
+    assignment_type = models.CharField(max_length=15, choices=AssignmentType.choices)
+    assigned_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='tool_assignments')
+    job_order = models.ForeignKey('JobOrder', on_delete=models.SET_NULL, null=True, blank=True, related_name='tool_assignments')
+    equipment = models.ForeignKey('Equipment', on_delete=models.SET_NULL, null=True, blank=True, related_name='tool_assignments')
+    client = models.ForeignKey('Client', on_delete=models.SET_NULL, null=True, blank=True, related_name='tool_assignments')
+    assigned_on = models.DateTimeField(default=timezone.now)
+    expected_return = models.DateField(null=True, blank=True)
+    returned_on = models.DateTimeField(null=True, blank=True)
+    status = models.CharField(max_length=10, choices=Status.choices, default=Status.ACTIVE)
+    notes = models.TextField(blank=True)
+
+    class Meta:
+        db_table = 'tool_assignments'
+        ordering = ['-assigned_on']
+        indexes = [
+            models.Index(fields=['tool', 'status']),
+            models.Index(fields=['assignment_type', 'status']),
+        ]
+
+    def __str__(self):
+        return f"{self.tool} -> {self.assignment_type} ({self.get_status_display()})"
+
+
+class ToolUsageLog(TimeStampedModel):
+    """Automatic usage logs for tools."""
+
+    class EventType(models.TextChoices):
+        CHECKOUT = 'CHECKOUT', 'Check-out'
+        CHECKIN = 'CHECKIN', 'Check-in'
+        CALIBRATION = 'CALIBRATION', 'Calibration'
+        MAINTENANCE = 'MAINTENANCE', 'Maintenance'
+        REPAIR = 'REPAIR', 'Repair'
+        ALERT = 'ALERT', 'Alert'
+
+    tool = models.ForeignKey(Tool, on_delete=models.CASCADE, related_name='usage_logs')
+    assignment = models.ForeignKey(ToolAssignment, on_delete=models.SET_NULL, null=True, blank=True, related_name='usage_logs')
+    event_type = models.CharField(max_length=20, choices=EventType.choices)
+    occurred_at = models.DateTimeField(default=timezone.now)
+    performed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='tool_usage_actions')
+    notes = models.TextField(blank=True)
+
+    class Meta:
+        db_table = 'tool_usage_logs'
+        ordering = ['-occurred_at']
+        indexes = [
+            models.Index(fields=['tool', 'event_type']),
+        ]
+
+    def __str__(self):
+        return f"{self.tool} - {self.event_type}"
+
+
+class ToolIncident(AuditedModel):
+    """Loss or damage incidents recorded for tools."""
+
+    class IncidentType(models.TextChoices):
+        LOSS = 'LOSS', 'Loss'
+        DAMAGE = 'DAMAGE', 'Damage'
+        CALIBRATION_FAILURE = 'CALIBRATION_FAILURE', 'Calibration Failure'
+        OTHER = 'OTHER', 'Other'
+
+    class Severity(models.TextChoices):
+        LOW = 'LOW', 'Low'
+        MEDIUM = 'MEDIUM', 'Medium'
+        HIGH = 'HIGH', 'High'
+
+    tool = models.ForeignKey(Tool, on_delete=models.CASCADE, related_name='incidents')
+    incident_type = models.CharField(max_length=25, choices=IncidentType.choices)
+    severity = models.CharField(max_length=10, choices=Severity.choices, default=Severity.MEDIUM)
+    occurred_on = models.DateField(default=timezone.now)
+    description = models.TextField()
+    resolved_on = models.DateField(null=True, blank=True)
+    resolution_notes = models.TextField(blank=True)
+
+    class Meta:
+        db_table = 'tool_incidents'
+        ordering = ['-occurred_on']
+
+    def __str__(self):
+        return f"{self.tool} - {self.incident_type}"
 
 
 class Calibration(AuditedModel):

@@ -6,7 +6,8 @@ from .models import (
     InspectionAnswer, PhotoRef, Certificate, Sticker,
     FieldInspectionReport, Approval, Publication, Tool, Calibration,
     Service, ServiceVersion, CompetenceAuthorization,
-    CompetenceEvidence, Person, PersonCredential
+    CompetenceEvidence, Person, PersonCredential, ToolCategory,
+    ToolAssignment, ToolUsageLog, ToolIncident
 )
 
 
@@ -265,17 +266,35 @@ class PublicationSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'created_at', 'updated_at']
 
 
+class ToolCategorySerializer(serializers.ModelSerializer):
+    """Serializer for tool categories"""
+
+    class Meta:
+        model = ToolCategory
+        fields = [
+            'id', 'code', 'name', 'description', 'requires_calibration',
+            'calibration_interval_days', 'default_assignment_type', 'notes',
+            'created_at', 'updated_at'
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+
 class ToolSerializer(serializers.ModelSerializer):
     """Tool serializer"""
+
     assigned_to_name = serializers.CharField(source='assigned_to.get_full_name', read_only=True)
-    
+    category_info = ToolCategorySerializer(source='category', read_only=True)
+    is_overdue_for_calibration = serializers.BooleanField(read_only=True)
+
     class Meta:
         model = Tool
         fields = [
-            'id', 'name', 'serial_number', 'calibration_due',
-            'assigned_to', 'assigned_to_name', 'created_at', 'updated_at'
+            'id', 'name', 'serial_number', 'category', 'category_info',
+            'status', 'assignment_mode', 'location', 'calibration_due',
+            'assigned_to', 'assigned_to_name', 'is_overdue_for_calibration',
+            'created_at', 'updated_at'
         ]
-        read_only_fields = ['id', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'category_info', 'assigned_to_name', 'is_overdue_for_calibration', 'created_at', 'updated_at']
 
 
 class CalibrationSerializer(serializers.ModelSerializer):
@@ -290,6 +309,66 @@ class CalibrationSerializer(serializers.ModelSerializer):
             'created_at', 'updated_at'
         ]
         read_only_fields = ['id', 'created_at', 'updated_at']
+
+
+class ToolAssignmentSerializer(serializers.ModelSerializer):
+    """Serializer for tool assignments"""
+
+    tool_info = ToolSerializer(source='tool', read_only=True)
+    assigned_user_name = serializers.CharField(source='assigned_user.get_full_name', read_only=True)
+    job_order_reference = serializers.CharField(source='job_order.po_reference', read_only=True)
+    equipment_tag = serializers.CharField(source='equipment.tag_code', read_only=True)
+    client_name = serializers.CharField(source='client.name', read_only=True)
+
+    class Meta:
+        model = ToolAssignment
+        fields = [
+            'id', 'tool', 'tool_info', 'assignment_type', 'status',
+            'assigned_user', 'assigned_user_name', 'job_order', 'job_order_reference',
+            'equipment', 'equipment_tag', 'client', 'client_name',
+            'assigned_on', 'expected_return', 'returned_on', 'notes',
+            'created_by', 'updated_by', 'created_at', 'updated_at'
+        ]
+        read_only_fields = [
+            'id', 'tool_info', 'assigned_user_name', 'job_order_reference',
+            'equipment_tag', 'client_name', 'created_by', 'updated_by',
+            'created_at', 'updated_at'
+        ]
+
+
+class ToolUsageLogSerializer(serializers.ModelSerializer):
+    """Serializer for tool usage logs"""
+
+    tool_info = ToolSerializer(source='tool', read_only=True)
+    assignment_info = ToolAssignmentSerializer(source='assignment', read_only=True)
+    performed_by_name = serializers.CharField(source='performed_by.get_full_name', read_only=True)
+
+    class Meta:
+        model = ToolUsageLog
+        fields = [
+            'id', 'tool', 'tool_info', 'assignment', 'assignment_info',
+            'event_type', 'occurred_at', 'performed_by', 'performed_by_name',
+            'notes', 'created_at', 'updated_at'
+        ]
+        read_only_fields = [
+            'id', 'tool_info', 'assignment_info', 'performed_by_name',
+            'created_at', 'updated_at'
+        ]
+
+
+class ToolIncidentSerializer(serializers.ModelSerializer):
+    """Serializer for tool incidents"""
+
+    tool_info = ToolSerializer(source='tool', read_only=True)
+
+    class Meta:
+        model = ToolIncident
+        fields = [
+            'id', 'tool', 'tool_info', 'incident_type', 'severity',
+            'occurred_on', 'description', 'resolved_on', 'resolution_notes',
+            'created_by', 'updated_by', 'created_at', 'updated_at'
+        ]
+        read_only_fields = ['id', 'tool_info', 'created_by', 'updated_by', 'created_at', 'updated_at']
 
 
 class CompetenceEvidenceSerializer(serializers.ModelSerializer):
