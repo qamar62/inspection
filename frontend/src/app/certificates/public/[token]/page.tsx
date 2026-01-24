@@ -120,9 +120,18 @@ export default async function CertificatePublicPage({ params }: { params: { toke
   const inspectionStart = inspection?.start_time ? formatDateTime(inspection.start_time) : null
   const inspectionEnd = inspection?.end_time ? formatDateTime(inspection.end_time) : null
   const headersList = headers()
-  const protocol = headersList.get('x-forwarded-proto') ?? 'https'
-  const host = headersList.get('x-forwarded-host') ?? headersList.get('host')
-  const shareUrl = host ? `${protocol}://${host}/certificates/public/${params.token}` : `${params.token}`
+  const envBaseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, '') ||
+    process.env.FRONTEND_URL?.replace(/\/+$/, '') ||
+    process.env.NEXT_PUBLIC_FRONTEND_URL?.replace(/\/+$/, '')
+
+  const headerHost = headersList.get('x-forwarded-host') ?? headersList.get('host') ?? undefined
+  const headerProto = headersList.get('x-forwarded-proto') ?? 'https'
+
+  const resolvedBaseUrl = envBaseUrl || (headerHost ? `${headerProto}://${headerHost}` : undefined)
+  const shareUrl = resolvedBaseUrl
+    ? `${resolvedBaseUrl}/certificates/public/${params.token}`
+    : `/certificates/public/${params.token}`
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-100 via-white to-sky-100 text-slate-900">

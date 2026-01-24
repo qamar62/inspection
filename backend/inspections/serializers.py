@@ -5,7 +5,8 @@ from .models import (
     Client, Equipment, JobOrder, JobLineItem, Inspection,
     InspectionAnswer, PhotoRef, Certificate, Sticker,
     FieldInspectionReport, Approval, Publication, Tool, Calibration,
-    Service, ServiceVersion
+    Service, ServiceVersion, CompetenceAuthorization,
+    CompetenceEvidence, Person, PersonCredential
 )
 
 
@@ -289,6 +290,67 @@ class CalibrationSerializer(serializers.ModelSerializer):
             'created_at', 'updated_at'
         ]
         read_only_fields = ['id', 'created_at', 'updated_at']
+
+
+class CompetenceEvidenceSerializer(serializers.ModelSerializer):
+    """Evidence serializer for competence authorizations"""
+
+    class Meta:
+        model = CompetenceEvidence
+        fields = [
+            'id', 'authorization', 'evidence_type', 'issued_by',
+            'issued_on', 'reference_code', 'document', 'notes',
+            'created_at', 'updated_at'
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+
+class CompetenceAuthorizationSerializer(serializers.ModelSerializer):
+    """Competence authorization serializer"""
+
+    user_name = serializers.CharField(source='user.get_full_name', read_only=True)
+    service_code = serializers.CharField(source='service.code', read_only=True)
+    evidence_items = CompetenceEvidenceSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = CompetenceAuthorization
+        fields = [
+            'id', 'user', 'user_name', 'service', 'service_code', 'discipline',
+            'level', 'scope_notes', 'valid_from', 'valid_until', 'last_assessed',
+            'status', 'evidence_items', 'created_by', 'updated_by',
+            'created_at', 'updated_at'
+        ]
+        read_only_fields = ['id', 'created_by', 'updated_by', 'created_at', 'updated_at']
+
+
+class PersonCredentialSerializer(serializers.ModelSerializer):
+    """Serializer for credentials held by a person"""
+
+    class Meta:
+        model = PersonCredential
+        fields = [
+            'id', 'person', 'credential_name', 'issuing_body',
+            'reference_code', 'issued_on', 'valid_until', 'status',
+            'document', 'notes', 'created_at', 'updated_at'
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+
+class PersonSerializer(serializers.ModelSerializer):
+    """People registry serializer with credential summaries"""
+
+    client_name = serializers.CharField(source='client.name', read_only=True)
+    credentials = PersonCredentialSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Person
+        fields = [
+            'id', 'first_name', 'last_name', 'email', 'phone',
+            'person_type', 'employer', 'client', 'client_name',
+            'notes', 'credentials', 'created_by', 'updated_by',
+            'created_at', 'updated_at'
+        ]
+        read_only_fields = ['id', 'client_name', 'credentials', 'created_by', 'updated_by', 'created_at', 'updated_at']
 
 
 class InspectionSubmitSerializer(serializers.Serializer):

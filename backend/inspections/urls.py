@@ -5,7 +5,8 @@ from .views import (
     UserViewSet, ClientViewSet, EquipmentViewSet, JobOrderViewSet,
     JobLineItemViewSet, InspectionViewSet, InspectionAnswerViewSet,
     PhotoRefViewSet, CertificateViewSet, FieldInspectionReportViewSet, StickerViewSet, ApprovalViewSet,
-    PublicationViewSet, ToolViewSet, CalibrationViewSet
+    PublicationViewSet, ToolViewSet, CalibrationViewSet, CompetenceAuthorizationViewSet,
+    CompetenceEvidenceViewSet, PersonViewSet, PersonCredentialViewSet
 )
 
 router = DefaultRouter()
@@ -26,6 +27,10 @@ router.register(r'approvals', ApprovalViewSet, basename='approval')
 router.register(r'publications', PublicationViewSet, basename='publication')
 router.register(r'tools', ToolViewSet, basename='tool')
 router.register(r'calibrations', CalibrationViewSet, basename='calibration')
+router.register(r'competence-authorizations', CompetenceAuthorizationViewSet, basename='competenceauthorization')
+router.register(r'competence-evidence', CompetenceEvidenceViewSet, basename='competenceevidence')
+router.register(r'people', PersonViewSet, basename='person')
+router.register(r'person-credentials', PersonCredentialViewSet, basename='personcredential')
 
 urlpatterns = [
     path('', include(router.urls)),

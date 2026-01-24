@@ -14,7 +14,8 @@ from .models import (
     Client, Equipment, JobOrder, JobLineItem, Inspection,
     InspectionAnswer, PhotoRef, Certificate, Sticker,
     FieldInspectionReport, Approval, Publication, Tool, Calibration, User,
-    Service, ServiceVersion
+    Service, ServiceVersion, CompetenceAuthorization, CompetenceEvidence,
+    Person, PersonCredential
 )
 from .serializers import (
     ClientSerializer, EquipmentSerializer, JobOrderSerializer,
@@ -23,11 +24,13 @@ from .serializers import (
     StickerSerializer, StickerResolveSerializer, FieldInspectionReportSerializer,
     ApprovalSerializer, PublicationSerializer, ToolSerializer,
     CalibrationSerializer, UserSerializer, AssignInspectorSerializer,
-    InspectionSubmitSerializer, ServiceSerializer, ServiceVersionSerializer
+    InspectionSubmitSerializer, ServiceSerializer, ServiceVersionSerializer,
+    CompetenceAuthorizationSerializer, CompetenceEvidenceSerializer,
+    PersonSerializer, PersonCredentialSerializer
 )
 from .permissions import (
     IsAdmin, IsAdminOrTeamLead, IsInspector, CanApprove,
-    CanPublish, ClientReadOnly, IsOwnerOrAdmin
+    CanPublish, ClientReadOnly, IsOwnerOrAdmin, IsAdminOrTechnicalManager
 )
 
 
@@ -63,6 +66,70 @@ class ServiceViewSet(viewsets.ModelViewSet):
 
     def perform_update(self, serializer):
         serializer.save(updated_by=self.request.user)
+
+
+class CompetenceAuthorizationViewSet(viewsets.ModelViewSet):
+    """ViewSet for HR competence authorizations."""
+
+    queryset = CompetenceAuthorization.objects.select_related('user', 'service', 'created_by', 'updated_by').prefetch_related('evidence_items')
+    serializer_class = CompetenceAuthorizationSerializer
+    permission_classes = [IsAuthenticated, IsAdminOrTechnicalManager]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['user', 'service', 'status', 'level']
+    search_fields = ['user__first_name', 'user__last_name', 'user__username', 'discipline', 'service__code']
+    ordering_fields = ['valid_from', 'valid_until', 'updated_at']
+    ordering = ['-valid_from']
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(updated_by=self.request.user)
+
+
+class CompetenceEvidenceViewSet(viewsets.ModelViewSet):
+    """ViewSet for competence evidence records."""
+
+    queryset = CompetenceEvidence.objects.select_related('authorization__user', 'authorization__service')
+    serializer_class = CompetenceEvidenceSerializer
+    permission_classes = [IsAuthenticated, IsAdminOrTechnicalManager]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['authorization', 'evidence_type', 'issued_on']
+    search_fields = ['issued_by', 'reference_code', 'authorization__user__username']
+    ordering_fields = ['issued_on', 'created_at']
+    ordering = ['-issued_on']
+
+
+class PersonViewSet(viewsets.ModelViewSet):
+    """ViewSet for people registry."""
+
+    queryset = Person.objects.select_related('client', 'created_by', 'updated_by').prefetch_related('credentials')
+    serializer_class = PersonSerializer
+    permission_classes = [IsAuthenticated, IsAdminOrTechnicalManager]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['person_type', 'client']
+    search_fields = ['first_name', 'last_name', 'email', 'employer', 'client__name']
+    ordering_fields = ['last_name', 'person_type', 'created_at']
+    ordering = ['last_name', 'first_name']
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(updated_by=self.request.user)
+
+
+class PersonCredentialViewSet(viewsets.ModelViewSet):
+    """ViewSet for person credentials."""
+
+    queryset = PersonCredential.objects.select_related('person', 'person__client')
+    serializer_class = PersonCredentialSerializer
+    permission_classes = [IsAuthenticated, IsAdminOrTechnicalManager]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['person', 'status']
+    search_fields = ['person__first_name', 'person__last_name', 'credential_name', 'reference_code']
+    ordering_fields = ['issued_on', 'valid_until', 'created_at']
+    ordering = ['-issued_on']
 
 
 class ServiceVersionViewSet(viewsets.ModelViewSet):

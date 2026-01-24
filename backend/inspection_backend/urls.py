@@ -1,7 +1,6 @@
 """
 URL configuration for inspection_backend project.
 """
-from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
@@ -14,9 +13,10 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
     SpectacularRedocView,
 )
+from inspections.admin import inspection_admin_site
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', inspection_admin_site.urls),
     
     # API Documentation
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),

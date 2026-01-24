@@ -643,3 +643,136 @@ class AuditLog(models.Model):
     
     def __str__(self):
         return f"{self.user} - {self.action} - {self.entity_type} {self.entity_id}"
+
+
+class CompetenceAuthorization(AuditedModel):
+    """Structured competence authorizations per service/discipline."""
+
+    class AuthorizationLevel(models.TextChoices):
+        SUPERVISED = 'SUPERVISED', 'Supervised'
+        AUTHORIZED = 'AUTHORIZED', 'Authorized'
+        LEAD = 'LEAD', 'Lead'
+
+    class Status(models.TextChoices):
+        ACTIVE = 'ACTIVE', 'Active'
+        EXPIRED = 'EXPIRED', 'Expired'
+        REVOKED = 'REVOKED', 'Revoked'
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='competence_authorizations')
+    service = models.ForeignKey(
+        Service,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='competence_authorizations'
+    )
+    discipline = models.CharField(max_length=120, blank=True, help_text="Discipline or subcategory for this authorization")
+    level = models.CharField(max_length=15, choices=AuthorizationLevel.choices, default=AuthorizationLevel.SUPERVISED)
+    scope_notes = models.TextField(blank=True, help_text="Additional scope notes or limitations")
+    valid_from = models.DateField(default=timezone.now)
+    valid_until = models.DateField(null=True, blank=True)
+    last_assessed = models.DateField(null=True, blank=True)
+    status = models.CharField(max_length=10, choices=Status.choices, default=Status.ACTIVE)
+
+    class Meta:
+        db_table = 'competence_authorizations'
+        ordering = ['user', '-valid_from']
+        indexes = [
+            models.Index(fields=['user', 'status']),
+            models.Index(fields=['service', 'discipline']),
+        ]
+        unique_together = [('user', 'service', 'discipline', 'level', 'valid_from')]
+
+    def __str__(self):
+        service_code = self.service.code if self.service else 'General'
+        return f"{self.user.get_full_name()} - {service_code} ({self.get_level_display()})"
+
+
+class CompetenceEvidence(TimeStampedModel):
+    """Evidence artifacts supporting an authorization."""
+
+    class EvidenceType(models.TextChoices):
+        TRAINING = 'TRAINING', 'Training'
+        CERTIFICATE = 'CERTIFICATE', 'Certificate'
+        ASSESSMENT = 'ASSESSMENT', 'Assessment'
+        OTHER = 'OTHER', 'Other'
+
+    authorization = models.ForeignKey(
+        CompetenceAuthorization,
+        on_delete=models.CASCADE,
+        related_name='evidence_items'
+    )
+    evidence_type = models.CharField(max_length=15, choices=EvidenceType.choices, default=EvidenceType.TRAINING)
+    issued_by = models.CharField(max_length=255, blank=True)
+    issued_on = models.DateField(null=True, blank=True)
+    reference_code = models.CharField(max_length=100, blank=True)
+    document = models.FileField(upload_to='competence_evidence/', blank=True, null=True)
+    notes = models.TextField(blank=True)
+
+    class Meta:
+        db_table = 'competence_evidence'
+        ordering = ['-issued_on', '-created_at']
+
+    def __str__(self):
+        return f"Evidence {self.id} for authorization {self.authorization_id}"
+
+
+class Person(AuditedModel):
+    """People registry for operators, trainees, and client staff."""
+
+    class PersonType(models.TextChoices):
+        OPERATOR = 'OPERATOR', 'Operator'
+        TRAINEE = 'TRAINEE', 'Trainee'
+        CLIENT_STAFF = 'CLIENT_STAFF', 'Client Staff'
+        INTERNAL = 'INTERNAL', 'Internal Staff'
+
+    first_name = models.CharField(max_length=120)
+    last_name = models.CharField(max_length=120)
+    email = models.EmailField(blank=True)
+    phone = models.CharField(max_length=30, blank=True)
+    person_type = models.CharField(max_length=20, choices=PersonType.choices, default=PersonType.OPERATOR)
+    employer = models.CharField(max_length=255, blank=True)
+    client = models.ForeignKey(Client, on_delete=models.SET_NULL, null=True, blank=True, related_name='associated_people')
+    notes = models.TextField(blank=True)
+
+    class Meta:
+        db_table = 'people'
+        ordering = ['last_name', 'first_name']
+        indexes = [
+            models.Index(fields=['person_type']),
+            models.Index(fields=['client', 'person_type']),
+        ]
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}".strip()
+
+
+class PersonCredential(TimeStampedModel):
+    """Certificates/credentials held by registered people."""
+
+    class CredentialStatus(models.TextChoices):
+        ACTIVE = 'ACTIVE', 'Active'
+        EXPIRED = 'EXPIRED', 'Expired'
+        SUSPENDED = 'SUSPENDED', 'Suspended'
+        REVOKED = 'REVOKED', 'Revoked'
+
+    person = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='credentials')
+    credential_name = models.CharField(max_length=150)
+    issuing_body = models.CharField(max_length=255, blank=True)
+    reference_code = models.CharField(max_length=120, blank=True)
+    issued_on = models.DateField(default=timezone.now)
+    valid_until = models.DateField(null=True, blank=True)
+    status = models.CharField(max_length=12, choices=CredentialStatus.choices, default=CredentialStatus.ACTIVE)
+    document = models.FileField(upload_to='people_credentials/', blank=True, null=True)
+    notes = models.TextField(blank=True)
+
+    class Meta:
+        db_table = 'person_credentials'
+        ordering = ['person', '-issued_on']
+        indexes = [
+            models.Index(fields=['person', 'status']),
+            models.Index(fields=['valid_until']),
+        ]
+
+    def __str__(self):
+        return f"{self.credential_name} - {self.person}"

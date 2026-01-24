@@ -12,6 +12,8 @@ _Last updated: 2026-01-22_
 - **Basic tools and calibration tracking**, recording ownership and calibration certificates.
 - **Audit log model** capable of storing ISO/IEC 17020 trail data (create/update/approve/publish actions).
 - **Service Master Registry backend** with Service & ServiceVersion models, serializers, viewsets, filtering, and admin-permissioned CRUD APIs.
+- **HR competence matrix backend** covering authorizations, evidence tracking, and admin tooling.
+- **People registry backend** for internal/external personnel with credential tracking and admin UX grouping.
 
 ## Pending Implementation / Enhancements Needed
 
@@ -20,12 +22,11 @@ _Last updated: 2026-01-22_
 - **Controlled templates and digital forms** for checklists, training proformas, assessments, and offline-friendly execution.
 - **Offline field app support** (sync queues, conflict handling, pending sync states, evidence requirements enforcement).
 - **Training & operator certification modules** (course catalog, sessions, QR-based attendance/assessment, certificates/wallet cards).
-- **HR competence matrix** beyond free-text competence, enforcing authorization per service category/discipline with validity dates.
 - **Tools & instruments governance** (categories, assignment types, calibration status enforcement, loss/damage handling, automatic usage logs).
 - **Company assets registry** for non-inspection assets with movement history and responsibility tracking.
 - **Controlled stock management** for letterheads and wallet cards, including issuance, numbering validation, and archival rendering flows.
 - **Document numbering rules** (non-sequential IDs, final archival copy generation, letterhead number capture).
 - **Client portal enablement** with scoped roles, document visibility, and notification rules tied to registered contacts.
 - **Notification system** (JO created/published, FIR issued) with configurable recipients, templates, and delivery logs.
-- **Finance handoff** with executed quantity snapshots, PO references, invoice number tracking, duplicate/SLA checks, and billing exports.
-- **People registry** for operators/trainees with certificate histories, expiry tracking, and integration with training/operator certification modules.
+- **Finance handoff** with executed quantity snapshots, PO references, invoice number tracking, duplicate/SLA checks, and billing exports _(deferred to end phase per latest plan)._ 
+- **Training & operator certification integration** with the people registry (course catalog, attendance, certificate issuance, wallet cards).
