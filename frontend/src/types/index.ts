@@ -308,6 +308,8 @@ export type ToolAssignmentType = 'USER' | 'JOB_ORDER' | 'EQUIPMENT' | 'CLIENT'
 
 export type ToolStatus = 'AVAILABLE' | 'ASSIGNED' | 'MAINTENANCE' | 'CALIBRATION' | 'LOST' | 'RETIRED'
 
+export type ToolCategoryAssignmentMode = 'INDIVIDUAL' | 'TEAM' | 'JOB_ORDER' | 'POOL'
+
 export interface ToolCategory {
   id: number
   code: string
@@ -315,7 +317,7 @@ export interface ToolCategory {
   description?: string
   requires_calibration: boolean
   calibration_interval_days?: number
-  default_assignment_type: ToolAssignmentType
+  default_assignment_type: ToolCategoryAssignmentMode
   notes?: string
   created_at: string
   updated_at: string
@@ -328,7 +330,7 @@ export interface Tool {
   category?: number
   category_info?: ToolCategory
   status: ToolStatus
-  assignment_mode: 'INDIVIDUAL' | 'TEAM' | 'JOB_ORDER' | 'POOL'
+  assignment_mode: ToolCategoryAssignmentMode
   location?: string
   calibration_due?: string
   assigned_to?: number

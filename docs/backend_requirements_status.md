@@ -1,6 +1,6 @@
 # Backend Requirements Status
 
-_Last updated: 2026-01-22_
+_Last updated: 2026-01-25_
 
 ## Implemented / Partially Implemented
 
@@ -9,7 +9,7 @@ _Last updated: 2026-01-22_
 - **Job order management** including line items, assignments, inspection execution, approvals, FIRs, and publication tracking.
 - **Certificate lifecycle** from inspection approval to PDF generation, QR share tokens, and publication.
 - **Sticker generation and resolution** for equipment linkage and history lookup.
-- **Tools & instruments governance** covering categories, assignment lifecycle, calibration enforcement, usage logging, and incident tracking.
+- **Tools & instruments governance** covering categories, assignment lifecycle, calibration enforcement, usage logging, and incident tracking, with DRF viewsets exposed under `/api/tool-*` routes.
 - **Audit log model** capable of storing ISO/IEC 17020 trail data (create/update/approve/publish actions).
 - **Service Master Registry backend** with Service & ServiceVersion models, serializers, viewsets, filtering, and admin-permissioned CRUD APIs.
 - **HR competence matrix backend** covering authorizations, evidence tracking, and admin tooling.
@@ -28,4 +28,5 @@ _Last updated: 2026-01-22_
 - **Client portal enablement** with scoped roles, document visibility, and notification rules tied to registered contacts.
 - **Notification system** (JO created/published, FIR issued) with configurable recipients, templates, and delivery logs.
 - **Finance handoff** with executed quantity snapshots, PO references, invoice number tracking, duplicate/SLA checks, and billing exports _(deferred to end phase per latest plan)._ 
-- **Training & operator certification integration** with the people registry (course catalog, attendance, certificate issuance, wallet cards).
+- **Training & operator certification integration** with the people registry (course catalog, attendance, certificate issuance, wallet cards) plus mobile-friendly HR dashboards.
+- **Dashboard admin CRUD suite** providing full create/update/delete flows across HR, tools governance, services, clients, inspections, and certificates so admins never rely on Django admin.
