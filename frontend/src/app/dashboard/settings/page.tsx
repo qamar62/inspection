@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   Bell,
   Building,
@@ -73,6 +74,7 @@ const FOUNDATION_SECTIONS: SettingTile[] = [
 
 export default function SettingsHubPage() {
   const [activeCategory, setActiveCategory] = useState<'workspace' | 'governance'>('workspace')
+  const router = useRouter()
 
   return (
     <div className="relative space-y-10">
@@ -155,10 +157,18 @@ export default function SettingsHubPage() {
               <h3 className="mt-6 text-lg font-semibold text-slate-900">{item.name}</h3>
               <p className="mt-2 text-sm text-slate-600">{item.description}</p>
               <div className="mt-6 flex items-center justify-between text-xs font-semibold uppercase tracking-wide text-slate-400">
-                <span>Preview module</span>
-                <span>Coming soon</span>
+                <span>{item.name === 'Team Roles & Access' ? 'Manage users' : 'Preview module'}</span>
+                <span>{item.name === 'Team Roles & Access' ? 'Open' : 'Coming soon'}</span>
               </div>
               <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 translate-y-12 rounded-t-3xl bg-gradient-to-t from-sky-100/30 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+              {item.name === 'Team Roles & Access' && (
+                <button
+                  type="button"
+                  onClick={() => router.push('/dashboard/settings/team-roles')}
+                  className="absolute inset-0"
+                  aria-label="Open Team Roles & Access"
+                />
+              )}
             </article>
           ))}
         </div>

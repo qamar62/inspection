@@ -151,14 +151,29 @@ class ServiceVersionViewSet(viewsets.ModelViewSet):
         serializer.save(updated_by=self.request.user)
 
 
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
-    """ViewSet for users"""
-    queryset = User.objects.filter(is_active=True)
+class UserViewSet(viewsets.ModelViewSet):
+    """ViewSet for users."""
+
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['username', 'email', 'first_name', 'last_name']
     ordering_fields = ['username', 'role']
+    ordering = ['username']
+
+    def get_queryset(self):
+        queryset = User.objects.all()
+
+        # Non-admin users only see active accounts.
+        if not self.request.user.is_authenticated or self.request.user.role != 'ADMIN':
+            queryset = queryset.filter(is_active=True)
+
+        return queryset
+
+    def get_permissions(self):
+        # Admin-only mutations; authenticated reads.
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [IsAuthenticated(), IsAdmin()]
+        return [IsAuthenticated()]
     
     @action(detail=False, methods=['get'])
     def me(self, request):
